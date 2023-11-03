@@ -17,6 +17,7 @@ import DiaryScreen from "./screens/DiaryScreen"
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
+import TimeCapsuleScreen from "./screens/TimeCapsuleScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ const Tabs = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Diary" component={DiaryScreen} />
+      <Tab.Screen name="TimeCapsule" component={TimeCapsuleScreen} />
     </Tab.Navigator>
   );
 };
