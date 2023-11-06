@@ -39,6 +39,7 @@ const Tabs = () => {
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Diary" component={DiaryScreen} />
         <Tab.Screen name="Location" component={LocationScreen} />
+
       </Tab.Navigator>
   );
 };

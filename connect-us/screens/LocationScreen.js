@@ -9,41 +9,125 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LocationDisplay = () => {
     const [location, setLocation] = useState(null);
+    const [otherHalfLocation,setOtherHalfLocation] = useState(null);
     const [userId, setUserId] = useState(null);
     const [loading, setLoading] = useState(true); // Start with loading true
     const [permission, setPermission] = useState(false);
+    const mapRef = React.useRef(null);
 
-    // Mocked location for the "other half" in Illinois
-    const mockOtherLocation = {
-        latitude: 40.7128, // Should be adjusted to a location closer to the user's real location
-        longitude: -74.0060,
+    const otherHalfId = 'EmaQTMOMmmdCnRLQH7IJd9M6P1K2';
+
+    const fitAllMarkers = () => {
+        if (mapRef.current && location && otherHalfLocation) {
+            mapRef.current.fitToCoordinates([location, otherHalfLocation], {
+                edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+                animated: true,
+            });
+        }
+    };
+
+    const fetchOtherHalfLocation = async () => {
+        const otherHalfLocationRef = doc(db, 'users', otherHalfId, 'locations', 'location');
+        const docSnap = await getDoc(otherHalfLocationRef);
+
+        if (docSnap.exists()) {
+            const locationData = docSnap.data();
+            if (locationData.locationPermission) {
+                setOtherHalfLocation({
+                    latitude: locationData.latitude,
+                    longitude: locationData.longitude,
+                });
+            } else {
+                setOtherHalfPermission(false);
+            }
+        } else {
+            setOtherHalfPermission(false);
+        }
     };
 
     useEffect(() => {
-        (async () => {
-            const auth = getAuth();
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    setUserId(user.uid);
-                    // Check system permission first
-                    let { status } = await Location.getForegroundPermissionsAsync();
-                    if (status === 'granted') {
-                        // System permission granted, now check Firestore
-                        await checkLocationPermission(user.uid);
-                    } else {
-                        // System permission not granted, show enable button
-                        setPermission(false);
-                        setLoading(false);
-                    }
-                } else {
-                    Alert.alert('No user', 'No user is signed in');
-                    setLoading(false);
+        const auth = getAuth();
+
+        // This function will be called to set up intervals and other stuff when the component mounts
+        const initialize = async (user) => {
+            setUserId(user.uid);
+            let { status } = await Location.getForegroundPermissionsAsync();
+            if (status === 'granted') {
+                await checkLocationPermission(user.uid);
+                await fetchOtherHalfLocation();
+                return true;
+            } else {
+                setPermission(false);
+                setLoading(false);
+                return false;
+            }
+        };
+
+        // This function will be called to clear intervals when the component unmounts
+        const cleanUp = (locationInterval, locationUpdateInterval) => {
+            clearInterval(locationInterval);
+            clearInterval(locationUpdateInterval);
+        };
+
+        // This will hold our intervals
+        let locationInterval;
+        let locationUpdateInterval;
+
+        // Subscribe to auth state changes
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const isGranted = await initialize(user);
+                if (isGranted) {
+                    locationInterval = setInterval(fetchOtherHalfLocation, 10000); // fetch every 10 seconds
+                    locationUpdateInterval = setInterval(() => {
+                        updateMyLocation(user.uid);
+                    }, 10000);
                 }
+            } else {
+                Alert.alert('No user', 'No user is signed in');
+                setLoading(false);
+            }
+        });
+
+        // This will be called when the component unmounts
+        return () => {
+            unsubscribe(); // Unsubscribe from auth state changes
+            cleanUp(locationInterval, locationUpdateInterval); // Clear intervals
+        };
+    }, []); // The effect should depend on nothing and behave like componentDidMount
+
+    useEffect(() => {
+        if (location && otherHalfLocation) {
+            setTimeout(() => {
+                fitAllMarkers();
+            }, 500);
+        }
+    }, [location, otherHalfLocation]); // This effect depends on location and otherHalfLocation
+
+
+
+    const updateMyLocation = async (userId) => {
+        try {
+            let actualLocation = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = actualLocation.coords;
+            setLocation({
+                latitude,
+                longitude,
             });
 
-            return () => unsubscribe();
-        })();
-    }, []);
+            const userLocationRef = doc(db, 'users', userId,'locations','location');
+            await setDoc(userLocationRef, {
+                locationPermission: true,
+                latitude,
+                longitude,
+                timestamp: new Date().toISOString()
+            });
+
+            console.log('Location updated');
+        } catch (error) {
+            console.error('Error updating location:', error);
+        }
+    };
 
     const checkLocationPermission = async (uid) => {
         const docRef = doc(db, 'users', uid, 'locations', 'location');
@@ -54,8 +138,6 @@ const LocationDisplay = () => {
             setLocation({
                 latitude: locationData.latitude,
                 longitude: locationData.longitude,
-                latitudeDelta: Math.abs(locationData.latitude - mockOtherLocation.latitude) * 2.2,
-                longitudeDelta: Math.abs(locationData.longitude - mockOtherLocation.longitude) * 2.2,
             });
             setPermission(true);
         } else {
@@ -80,17 +162,12 @@ const LocationDisplay = () => {
             return;
         }
 
-
-
         try {
             let actualLocation = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = actualLocation.coords;
             setLocation({
                 latitude,
                 longitude,
-                // Calculate the deltas to include both locations
-                latitudeDelta: Math.abs(mockOtherLocation.latitude - latitude) * 2.2,
-                longitudeDelta: Math.abs(mockOtherLocation.longitude - longitude) * 2.2,
             });
 
             const userLocationRef = doc(db, 'users', userId,'locations','location');
@@ -114,10 +191,13 @@ const LocationDisplay = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                {location && permission ? (
-                    <MapView style={styles.map} initialRegion={location}>
-                        <Marker coordinate={location} title="My Location" />
-                        <Marker coordinate={mockOtherLocation} title="Other Location" />
+                {location && permission && otherHalfLocation ? (
+                    <MapView
+                        ref={mapRef}
+                        style={styles.map}
+                    >
+                        <Marker coordinate={location} pinColor="blue" title="My Location" />
+                        <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
                     </MapView>
                 ) : (
                     <View style={styles.buttonContainer}>
