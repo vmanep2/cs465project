@@ -16,7 +16,6 @@ import LoginScreen from "./screens/LoginScreen";
 import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
-import AppLoading from 'expo-app-loading';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,14 +44,10 @@ const Tabs = () => {
   );
 };
 
+
 export default function ConnectUs() {
-  const [fontsLoaded] = useFonts({
-    DMBold: require("./assets/fonts/DMSans-Bold.ttf"),
-    DMMedium: require("./assets/fonts/DMSans-Medium.ttf"),
-    DMRegular: require("./assets/fonts/DMSans-Regular.ttf"),
-    'balsamiq-sans' : require('./assets/fonts/BalsamiqSans-Regular.ttf'),
-    'balsamiq-sans-bold' : require('./assets/fonts/BalsamiqSans-Bold.ttf'),
-  });
+
+  
 
   const [isLoading, setIsLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
