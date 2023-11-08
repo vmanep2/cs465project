@@ -6,6 +6,8 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { format, utcToZonedTime } from 'date-fns-tz';
+import {Text} from "react-native-ui-lib";
 
 const LocationDisplay = () => {
     const [location, setLocation] = useState(null);
@@ -14,6 +16,7 @@ const LocationDisplay = () => {
     const [loading, setLoading] = useState(true); // Start with loading true
     const [permission, setPermission] = useState(false);
     const mapRef = React.useRef(null);
+    const [otherHalfLocalTime, setOtherHalfLocalTime] = useState('');
 
     const otherHalfId = 'EmaQTMOMmmdCnRLQH7IJd9M6P1K2';
 
@@ -37,12 +40,25 @@ const LocationDisplay = () => {
                     latitude: locationData.latitude,
                     longitude: locationData.longitude,
                 });
+                updateOtherHalfLocalTime(locationData.latitude, locationData.longitude);
             } else {
                 setOtherHalfPermission(false);
             }
         } else {
             setOtherHalfPermission(false);
         }
+    };
+
+    const updateOtherHalfLocalTime = async (latitude, longitude) => {
+        // Assume we get the timezone offset using the coordinates (latitude, longitude)
+        // For simplicity, let's say we find out the timezone is 'America/New_York'
+        const timezone = 'America/New_York'; // This would be dynamic in a real app
+
+        // Convert UTC time to zoned time
+        const zonedTime = utcToZonedTime(new Date(), timezone);
+        // Format the zoned time
+        const formattedZonedTime = format(zonedTime, 'yyyy-MM-dd HH:mm:ssXXX', { timeZone: timezone });
+        setOtherHalfLocalTime(formattedZonedTime);
     };
 
     useEffect(() => {
@@ -189,42 +205,54 @@ const LocationDisplay = () => {
     };
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
-                {location && permission && otherHalfLocation ? (
-                    <MapView
-                        ref={mapRef}
-                        style={styles.map}
-                    >
-                        <Marker coordinate={location} pinColor="blue" title="My Location" />
-                        <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
-                    </MapView>
-                ) : (
-                    <View style={styles.buttonContainer}>
-                        <Button title="Enable My Location" onPress={enableMyLocation} disabled={loading} />
-                    </View>
-                )}
-            </View>
-        </SafeAreaView>
+        <View style={styles.container}>
+            <MapView
+                ref={mapRef}
+                style={styles.map}
+                // other props
+            >
+                <Marker coordinate={location} pinColor="blue" title="My Location" />
+                <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
+            </MapView>
+            <SafeAreaView style={styles.overlay}>
+                {/* Overlay content here */}
+                <View style={styles.partnerTimeContainer}>
+                    <Text style={styles.partnerTimeText}>
+                        Partner's Local Time: {otherHalfLocalTime}
+                    </Text>
+                </View>
+            </SafeAreaView>
+        </View>
+
     );
 };
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     container: {
-        flex: 1,
-        justifyContent: 'flex-start',
+        flex: 1, // The container takes up the full screen
+        backgroundColor: 'transparent', // Set to transparent
     },
     map: {
-        flex: 1,
+        ...StyleSheet.absoluteFillObject, // Make the map extend to the edges
     },
-    buttonContainer: {
-        margin: 20,
-        paddingHorizontal: 10,
-    }
+    overlay: {
+        justifyContent: 'space-between', // Space children out between top and bottom
+        padding: 10, // Add padding if you want to avoid the notch slightly
+    },
+    partnerTimeContainer: {
+        alignSelf: 'center', // Center the time container horizontally
+        padding: 10,
+        position: 'absolute',
+        top: Platform.select({ ios: 45, android: 10 }), // Adjust top for iOS notch
+        width: '100%',
+        alignItems: 'center',
+    },
+    partnerTimeText: {
+        color: '#fff', // Color of the text, white for example
+        backgroundColor: 'rgba(0,0,0,0.2)', // Semi-transparent black background
+        padding: 8,
+        borderRadius: 20,
+    },
 });
 
 export default LocationDisplay;
