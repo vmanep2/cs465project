@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
         if (userVerified()) {
           const user = userCredentials.user;
           console.log("Logged in with:", user.email);
-          // navigation.replace("Tabs");
+          //navigation.replace("Tabs");
           AsyncStorage.setItem("LoggedIn", JSON.stringify(true));
         } else {
           alert("Please verify your email.");
