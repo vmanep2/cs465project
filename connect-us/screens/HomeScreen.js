@@ -30,7 +30,10 @@ import * as Font from 'expo-font';
 import {
     ImageBackground
 } from 'react-native';
-
+import { Ionicons } from '@expo/vector-icons';
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
 
@@ -43,14 +46,30 @@ export default function App() {
         .current;
     const fadeAnim = useRef(new Animated.Value(0))
         .current;
-
-
+    
+    const handleLogOut = async () => {
+    try {
+      await AsyncStorage.removeItem("LoggedIn");
+      signOut(auth)
+        .then(() => {
+          console.log("Sign out succesful");
+          // navigation.replace("Login");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+    };
+    
 
     const handlePress = (type) => {
         if (type === 'heart') {
             setHeartCount(heartCount + 1);
         } else if (type === 'missU') {
             setMissUCount(missUCount + 1);
+            
         }
 
         Animated.sequence([
@@ -83,11 +102,13 @@ export default function App() {
             .start();
     };
 
-
+    
   return (
   <ImageBackground source={{ uri: 'http://chitandaeru.synology.me:80/2.gif' }} style={styles.backgroundImage} resizeMode="cover">
       <LinearGradient colors={['#e91d63', 'transparent' ]} locations={[0, 0.33]} style={styles.container}>
-
+        <TouchableOpacity onPress={handleLogOut} style={styles.logoutButton}>
+                    <Ionicons name="log-out-outline" size={30} color="black" />
+                </TouchableOpacity>
           <Animated.View style={[ styles.banner, { transform: [{ translateY: dropAnim }], opacity: fadeAnim } ]}>
               <Text style={styles.bannerText}> ✉️ Message Sent! </Text>
           </Animated.View>
@@ -336,6 +357,12 @@ const styles = StyleSheet.create({
     }
 
     ,
+    logoutButton: {
+        position: 'absolute',
+        top: 75,
+        right: 20, // Change to 'left: 20' for top left
+        // Add more styling as needed
+    },
     buttonIcon: {
         width: 70,
             height: 70,
