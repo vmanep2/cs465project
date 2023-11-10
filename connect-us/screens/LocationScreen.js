@@ -17,6 +17,9 @@ const LocationDisplay = () => {
     const [permission, setPermission] = useState(false);
     const mapRef = React.useRef(null);
     const [otherHalfLocalTime, setOtherHalfLocalTime] = useState('');
+    const [showEnableLocationButton, setShowEnableLocationButton] = useState(false);
+    const [locationPermissionMessage, setLocationPermissionMessage] = useState('');
+    const [partnerPermission, setPartnerPermission] = useState(null);
 
     const otherHalfId = 'EmaQTMOMmmdCnRLQH7IJd9M6P1K2';
 
@@ -27,6 +30,29 @@ const LocationDisplay = () => {
                 animated: true,
             });
         }
+    };
+
+    const checkAndRequestPermissions = async (uid) => {
+        let systemPermissionStatus = await Location.getForegroundPermissionsAsync();
+        const dbPermissionStatus = await checkDBLocationPermission(uid);
+
+        if (systemPermissionStatus.status !== 'granted' || !dbPermissionStatus) {
+            // Set the UI to show the enable location button and message
+            setShowEnableLocationButton(true);
+            setLocationPermissionMessage('Your location is not enabled. Enable it to share your location.');
+            setLoading(false);
+        } else {
+            // Permissions are granted, proceed with location fetching
+            setShowEnableLocationButton(false);
+            fetchOtherHalfLocation();
+            updateMyLocation(uid);
+        }
+    };
+
+    const checkDBLocationPermission = async (uid) => {
+        const docRef = doc(db, 'users', uid, 'locations', 'location');
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() && docSnap.data().locationPermission;
     };
 
     const fetchOtherHalfLocation = async () => {
@@ -41,11 +67,12 @@ const LocationDisplay = () => {
                     longitude: locationData.longitude,
                 });
                 updateOtherHalfLocalTime(locationData.latitude, locationData.longitude);
+                setPartnerPermission(true);
             } else {
-                setOtherHalfPermission(false);
+                setPartnerPermission(false);
             }
         } else {
-            setOtherHalfPermission(false);
+            setPartnerPermission(false);
         }
     };
 
@@ -78,6 +105,9 @@ const LocationDisplay = () => {
                 return false;
             }
         };
+        const fetchInterval = setInterval(() => {
+            fetchOtherHalfLocation().catch(console.error);
+        }, 10000);
 
         // This function will be called to clear intervals when the component unmounts
         const cleanUp = (locationInterval, locationUpdateInterval) => {
@@ -92,6 +122,7 @@ const LocationDisplay = () => {
         // Subscribe to auth state changes
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                await checkAndRequestPermissions(user.uid);
                 const isGranted = await initialize(user);
                 if (isGranted) {
                     locationInterval = setInterval(fetchOtherHalfLocation, 10000); // fetch every 10 seconds
@@ -109,6 +140,7 @@ const LocationDisplay = () => {
         return () => {
             unsubscribe(); // Unsubscribe from auth state changes
             cleanUp(locationInterval, locationUpdateInterval); // Clear intervals
+            clearInterval(fetchInterval);
         };
     }, []); // The effect should depend on nothing and behave like componentDidMount
 
@@ -124,6 +156,12 @@ const LocationDisplay = () => {
 
     const updateMyLocation = async (userId) => {
         try {
+            const currentPermission = await checkDBLocationPermission(userId);
+            if (!currentPermission) {
+                console.log('Location permission is not granted.');
+                return; // Exit if permission is not granted
+            }
+
             let actualLocation = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = actualLocation.coords;
             setLocation({
@@ -131,9 +169,9 @@ const LocationDisplay = () => {
                 longitude,
             });
 
-            const userLocationRef = doc(db, 'users', userId,'locations','location');
+            const userLocationRef = doc(db, 'users', userId, 'locations', 'location');
             await setDoc(userLocationRef, {
-                locationPermission: true,
+                locationPermission: true, // Keep this as true since permission is granted
                 latitude,
                 longitude,
                 timestamp: new Date().toISOString()
@@ -144,6 +182,7 @@ const LocationDisplay = () => {
             console.error('Error updating location:', error);
         }
     };
+
 
     const checkLocationPermission = async (uid) => {
         const docRef = doc(db, 'users', uid, 'locations', 'location');
@@ -195,36 +234,56 @@ const LocationDisplay = () => {
             });
 
             setPermission(true);
-            Alert.alert('Success', 'Location stored successfully');
+            Alert.alert('Success', 'Location Enabled!');
         } catch (error) {
             console.error('Error storing location:', error);
             Alert.alert('Error', `Failed to store location: ${error.message}`);
         } finally {
             setLoading(false);
         }
+        await checkAndRequestPermissions(userId);
     };
 
     return (
         <View style={styles.container}>
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                // other props
-            >
-                <Marker coordinate={location} pinColor="blue" title="My Location" />
-                <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
-            </MapView>
-            <SafeAreaView style={styles.overlay}>
-                {/* Overlay content here */}
-                <View style={styles.partnerTimeContainer}>
-                    <Text style={styles.partnerTimeText}>
-                        Partner's Local Time: {otherHalfLocalTime}
+            {showEnableLocationButton ? (
+                <View style={styles.permissionScreen}>
+                    <Text style={styles.permissionMessage}>
+                        {locationPermissionMessage}
                     </Text>
+                    <Button title="Enable Location" onPress={enableMyLocation} />
                 </View>
-            </SafeAreaView>
+            ) : partnerPermission ? (
+                // MapView and other components
+                <>
+                    <MapView
+                        ref={mapRef}
+                        style={styles.map}
+                        // other props
+                    >
+                        <Marker coordinate={location} pinColor="blue" title="My Location" />
+                        <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
+                    </MapView>
+                    <SafeAreaView style={styles.overlay}>
+                        <View style={styles.partnerTimeContainer}>
+                            <Text style={styles.partnerTimeText}>
+                                Partner's Local Time: {otherHalfLocalTime}
+                            </Text>
+                        </View>
+                    </SafeAreaView>
+                </>
+            ) : (
+                // View when partner's location permissions are not enabled
+                <View style={styles.partnerPermissionScreen}>
+                    <Text style={styles.permissionMessage}>
+                        Partner's location is not enabled.
+                    </Text>
+                    {/* Add any other UI elements if needed */}
+                </View>
+            )}
         </View>
-
     );
+
 };
 
 const styles = StyleSheet.create({
@@ -247,11 +306,23 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
     },
-    partnerTimeText: {
-        color: '#fff', // Color of the text, white for example
-        backgroundColor: 'rgba(0,0,0,0.2)', // Semi-transparent black background
-        padding: 8,
-        borderRadius: 20,
+    permissionScreen: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff', // White background for the permission screen
+    },
+    permissionMessage: {
+        marginBottom: 20,
+        fontSize: 18,
+        textAlign: 'center',
+        // Add any other styling you want for the message
+    },
+    partnerPermissionScreen: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff', // White background for the partner permission screen
     },
 });
 
