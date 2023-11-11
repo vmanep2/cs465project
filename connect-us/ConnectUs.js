@@ -16,6 +16,7 @@ import LoginScreen from "./screens/LoginScreen";
 import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -74,6 +75,7 @@ export default function ConnectUs() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="ForgotPass" component={ForgotPassScreen} />
         </Stack.Navigator>

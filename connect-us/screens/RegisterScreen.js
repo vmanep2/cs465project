@@ -163,7 +163,7 @@ const RegisterScreen = ({ navigation }) => {
                   fontSize: 16,
                 }}
               >
-                Sign Up
+                Next
               </Text>
             </TouchableOpacity>
           </View>

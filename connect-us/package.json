@@ -27,10 +27,12 @@
     "obscenity": "^0.1.4",
     "react": "18.2.0",
     "react-native": "0.72.6",
+    "react-native-image-picker": "^7.0.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "1.7.1",
     "react-native-safe-area-context": "^4.6.3",
-    "react-native-ui-lib": "^7.9.1"
+    "react-native-ui-lib": "^7.9.1",
+    "expo-image-picker": "~14.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
