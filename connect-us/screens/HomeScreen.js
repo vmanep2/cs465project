@@ -9,26 +9,27 @@
  		fontFamily: 'balsamiq-sans',
 
  */
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  Button,
   TouchableOpacity,
   Animated,
+  ImageBackground,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Font from "expo-font";
-import * as Haptics from "expo-haptics";
-import { ImageBackground } from "react-native";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MaskedView from "@react-native-community/masked-view";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Haptics from 'expo-haptics';
+
+const IconComponent = memo(({ type, style }) => (
+    <Icon name={type} size={14} color={"rgba(233, 29, 99, 0.2)"} style={style} />
+  ));
 
 export default function App() {
   const options = {
@@ -43,25 +44,21 @@ export default function App() {
   const [days, setDays] = useState(12);
   const dropAnim = useRef(new Animated.Value(-100)).current;
   const [liked, setLiked] = useState(false);
-  const handleLogOut = async () => {
+  const handleLogOut = useCallback(async () => {
     try {
       await AsyncStorage.removeItem("LoggedIn");
       signOut(auth)
-        .then(() => {
-          console.log("Sign out succesful");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        .then(() => console.log("Sign out successful"))
+        .catch((error) => console.log(error));
     } catch (e) {
       console.log(e);
     }
-  };
+  }, []);
   const [isBannerVisible, setIsBannerVisible] = useState(false);
   const [rapidPressCount, setRapidPressCount] = useState(0);
   const rapidPressTimer = useRef(null);
 
-  const showBanner = () => {
+  const showBanner = useCallback(() => {
     setIsBannerVisible(true);
     dropAnim.setValue(-100);
     Animated.timing(dropAnim, {
@@ -69,9 +66,9 @@ export default function App() {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  };
+  }, [dropAnim]);
 
-  const hideBanner = () => {
+  const hideBanner = useCallback(() => {
     Animated.timing(dropAnim, {
       toValue: -100,
       duration: 500,
@@ -80,9 +77,9 @@ export default function App() {
       setIsBannerVisible(false);
       setRapidPressCount(0); 
     });
-  };
+  }, [dropAnim]);
 
-  const handlePress = (type) => {
+  const handlePress = useCallback((type) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
 
     if (type === "heart") {
@@ -102,7 +99,7 @@ export default function App() {
     }, 2000);
     addIcon(type);
     icons.forEach((icon) => startIconAnimation(icon.key));
-  };
+}, [heartCount, missUCount, isBannerVisible, rapidPressTimer, iconsRef]);
 
   const heartButtonScale = useRef(new Animated.Value(1)).current;
   const missUButtonScale = useRef(new Animated.Value(1)).current;
@@ -369,7 +366,7 @@ export default function App() {
                 ],
               }}
             >
-              <Icon name={"heart"} size={14} color={"rgba(233, 29, 99, 0.2)"} />
+              <IconComponent type={"heart"} />
             </Animated.View>
           ))}
         </View>
