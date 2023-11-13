@@ -99,7 +99,7 @@ export default function App() {
     }, 2000);
     addIcon(type);
     icons.forEach((icon) => startIconAnimation(icon.key));
-}, [heartCount, missUCount, isBannerVisible, rapidPressTimer, iconsRef]);
+  }, [heartCount, missUCount, isBannerVisible, rapidPressTimer, iconsRef]);
 
   const heartButtonScale = useRef(new Animated.Value(1)).current;
   const missUButtonScale = useRef(new Animated.Value(1)).current;
@@ -111,6 +111,7 @@ export default function App() {
       useNativeDriver: true,
     }).start();
   };
+  
   const animateHeartPopIn = () => animateButton(heartButtonScale, 1.2);
   const animateHeartPopOut = () => animateButton(heartButtonScale, 1);
   const animateMissUPopIn = () => animateButton(missUButtonScale, 1.2);
