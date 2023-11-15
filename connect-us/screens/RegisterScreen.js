@@ -26,6 +26,7 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
+  const [partnerUserName, setPartnerUserName] = useState("");
 
   const insets = useSafeArea();
 
@@ -56,7 +57,7 @@ const RegisterScreen = ({ navigation }) => {
         console.log("Registered with:", user.email);
       })
       .catch((error) => {
-        alert(error.message)
+        alert("An error occured. Please try again.")
         console.log(error.message)})
       .then(() => {
         sendEmailVerification(auth.currentUser, {
@@ -69,7 +70,7 @@ const RegisterScreen = ({ navigation }) => {
             );
           })
           .catch((error) => {
-            alert(error.message);
+            alert("An error occured. Please try again.");
             console.log("Verification email send:")
             console.log(error.message)
           })
@@ -106,7 +107,7 @@ const RegisterScreen = ({ navigation }) => {
           contentContainerStyle={{ alignItems: "center" }}
         >
           <Text style={styles.headertext}>Create new account</Text>
-          <Text style={styles.subheadertext}>Please sign up to continue</Text>
+          <Text style={styles.subheadertext}>Please enter your login information</Text>
 
           <TextInput
             placeholder="Username"
@@ -139,6 +140,14 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={(text) => setConfirmPass(text)}
             style={styles.inputfield}
             secureTextEntry
+          />
+          <TextInput
+            placeholder="Partner Username"
+            placeholderTextColor={"black"}
+            autoComplete="username"
+            value={partnerUserName}
+            onChangeText={(text) => setPartnerUserName(text)}
+            style={styles.partnerinputfield}
           />
 
           <View style={{ width: "100%", alignItems: "center" }}>

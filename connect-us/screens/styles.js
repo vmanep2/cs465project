@@ -21,6 +21,21 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         paddingLeft: 30
     },
+    partnerinputfield: {
+        backgroundColor: "#e91d63",
+        justifyContent: "center",
+        width: "87%",
+        height: 60,
+        color: "white",
+        opacity: 0.5,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 22,
+        marginTop: 5,
+        marginBottom: 10,
+        fontWeight: "700",
+        paddingLeft: 30
+    },
     inputbutton: {
         backgroundColor: "#33363d",
         justifyContent: "center",
