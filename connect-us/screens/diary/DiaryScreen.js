@@ -1,44 +1,19 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { useSafeArea } from "react-native-safe-area-context";
-import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import AddMemory from "./AddMemory";
+import ViewMemory from "./ViewMemory";
+import CalendarView from "./CalendarView";
 
-import FAB from '../utils/FAB'
+const Stack = createStackNavigator();
+
 
 export default function DiaryScreen() {
-    const insets = useSafeArea();
-    const navigation = useNavigation();
-
-    const handleAddButtonPress = () => {
-        navigation.navigate("AddMemory");
-    }
-
-    const handleBack = () => {
-        navigation.navigate("Home");
-    }
-
     return (
-        <View style={{ flex: 1 }}>
-            <Text style={styles.heading}>Diary</Text>
-            <View style={styles.container}>
-                <Text>No memories today, create one!</Text>
-                <FAB onPress={handleAddButtonPress} title="+" />
-            </View>
-        </View>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="ViewMemory" component={ViewMemory} />
+            <Stack.Screen name="AddMemory" component={AddMemory} />
+            <Stack.Screen name="CalendarView" component={CalendarView} />
+        </Stack.Navigator>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 50,
-    },
-    heading: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      margin: 10,
-      marginTop: 50,
-    }
-});
