@@ -11,7 +11,6 @@ import { useSafeArea } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../firebaseConfig";
 import { ref, uploadBytes } from "firebase/storage";
-// import * as FileSystem from "expo-file-system";
 
 export default function AddLogScreen({ route }) {
   const insets = useSafeArea();

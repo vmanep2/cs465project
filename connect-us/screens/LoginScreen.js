@@ -20,6 +20,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProfileScreen from "./ProfileScreen";
 import RegisterScreen from "./RegisterScreen";
 import ForgotPassScreen from "./ForgotPassScreen";
 import styles from "./styles";
@@ -39,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const navigateSignUp = () => {
-    navigation.navigate("Register");
+    navigation.navigate("Profile");
   };
 
   const navigateForgotPassword = () => {
