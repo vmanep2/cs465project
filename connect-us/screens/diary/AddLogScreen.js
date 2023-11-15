@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../firebaseConfig";
+import { storage } from "../../firebaseConfig";
 import { ref, uploadBytes } from "firebase/storage";
 
 export default function AddLogScreen({ route }) {
@@ -102,7 +102,7 @@ export default function AddLogScreen({ route }) {
         ) : (
           <TouchableOpacity onPress={pickImage}>
             <Image
-              source={require("../assets/empty.jpg")}
+              source={require("../../assets/empty.jpg")}
               style={{
                 width: 350,
                 height: 250,

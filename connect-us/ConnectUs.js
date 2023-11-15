@@ -10,23 +10,16 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import LoadingScreen from "./screens/LoadingScreen";
 import HomeScreen from "./screens/HomeScreen";
-<<<<<<< HEAD
-import DiaryScreen from "./screens/DiaryScreen";
-=======
 import DiaryScreen from "./screens/diary/DiaryScreen"
->>>>>>> main
 import LoginScreen from "./screens/LoginScreen";
 import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
 import TimeCapsuleScreen from "./screens/TimeCapsuleScreen";
-<<<<<<< HEAD
-import AddLogScreen from "./screens/AddLogScreen";
-=======
+import AddLogScreen from "./screens/diary/AddLogScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
->>>>>>> main
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -76,7 +69,7 @@ const Tabs = ({ user }) => {
     />
     <Tab.Screen 
       name="TimeCapsule" 
-      component={HomeScreen}
+      component={TimeCapsuleScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons name="hourglass-bottom" color={color} size={size} />
