@@ -1,4 +1,3 @@
-
 import { isLoaded, useFonts } from "expo-font";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -11,19 +10,28 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import LoadingScreen from "./screens/LoadingScreen";
 import HomeScreen from "./screens/HomeScreen";
+<<<<<<< HEAD
+import DiaryScreen from "./screens/DiaryScreen";
+=======
 import DiaryScreen from "./screens/diary/DiaryScreen"
+>>>>>>> main
 import LoginScreen from "./screens/LoginScreen";
 import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
+import TimeCapsuleScreen from "./screens/TimeCapsuleScreen";
+<<<<<<< HEAD
+import AddLogScreen from "./screens/AddLogScreen";
+=======
 import ProfileScreen from "./screens/ProfileScreen";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+>>>>>>> main
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const Tabs = () => {
+const Tabs = ({ user }) => {
   return (
   <Tab.Navigator
     screenOptions={{
@@ -75,24 +83,28 @@ const Tabs = () => {
         ),
       }}
     />
+    <Tab.Screen
+        name="AddLog"
+        component={AddLogScreen}
+        initialParams={{ uid: user?.uid }}
+      />
   </Tab.Navigator>
 );
 
 };
 
-
 export default function ConnectUs() {
-
-  
-
   const [isLoading, setIsLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && auth.currentUser.emailVerified) {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser && auth.currentUser.emailVerified) {
         console.log("Logged in");
         setLoggedIn(true);
+        setUser(currentUser);
+        // console.log(currentUser)
       } else {
         setLoggedIn(false);
       }
@@ -117,9 +129,7 @@ export default function ConnectUs() {
     );
   }
 
-  return (
-      <Tabs/>
-  );
+  return <Tabs user={user} />;
 }
 
 export { Tabs };
