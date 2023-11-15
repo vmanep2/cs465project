@@ -328,7 +328,15 @@ const styles = StyleSheet.create({
         top: Platform.select({ ios: 45, android: 10 }), // Adjust top for iOS notch
         width: '100%',
         alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // White with 50% opacity
+        borderRadius: 15
     },
+
+    partnerTimeText: {
+        fontSize: 18, // Increased font size
+        // Add other text styles if needed
+    },
+
     permissionScreen: {
         flex: 1,
         justifyContent: 'center',
