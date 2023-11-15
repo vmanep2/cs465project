@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
-import Carousel from 'react-native-snap-carousel';
 import { collection, getDocs } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
 
