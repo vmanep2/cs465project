@@ -1,6 +1,5 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import FAB from '../utils/FAB'
 
 export default function CalendarView() {
 
@@ -9,16 +8,31 @@ export default function CalendarView() {
     }
 
     return (
-        <View style={{ flex: 1 }}>
-            <Text style={styles.heading}>Diary</Text>
+        <View style={styles.frame}>
+            <View style={styles.rowcontainer}>
+                <Text style={styles.heading}>Calendar</Text>
+            </View>
+            
             <View style={styles.container}>
-                <Text>calendar goes here</Text>
+                <Text style={styles.paragraph}>calendar goes here</Text>
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    frame: {
+        flex: 1,
+        marginTop: 30,
+    },
+    rowcontainer: {
+        margin: 5,
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
     container: {
       flex: 1,
       justifyContent: 'center',
@@ -27,8 +41,9 @@ const styles = StyleSheet.create({
     },
     heading: {
       fontSize: 28,
-      fontWeight: 'bold',
-      margin: 10,
-      marginTop: 50,
+      fontWeight: 'bold'
+    },
+    paragraph: {
+      fontSize: 18,
     }
 });
