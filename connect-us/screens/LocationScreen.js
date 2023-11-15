@@ -8,11 +8,14 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import {Text} from "react-native-ui-lib";
+import {Image} from "react-native";
+import axios from 'axios';
 
 const LocationDisplay = () => {
     const [location, setLocation] = useState(null);
     const [otherHalfLocation,setOtherHalfLocation] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [firstName,setFirstName] = useState(null);
     const [loading, setLoading] = useState(true); // Start with loading true
     const [permission, setPermission] = useState(false);
     const mapRef = React.useRef(null);
@@ -77,15 +80,21 @@ const LocationDisplay = () => {
     };
 
     const updateOtherHalfLocalTime = async (latitude, longitude) => {
-        // Assume we get the timezone offset using the coordinates (latitude, longitude)
-        // For simplicity, let's say we find out the timezone is 'America/New_York'
-        const timezone = 'America/New_York'; // This would be dynamic in a real app
+        const apiKey = 'FUCA9CNRLUNI'; // Replace with your actual API key
+        const url = `https://api.timezonedb.com/v2.1/get-time-zone?key=${apiKey}&format=json&by=position&lat=${latitude}&lng=${longitude}`;
 
-        // Convert UTC time to zoned time
-        const zonedTime = utcToZonedTime(new Date(), timezone);
-        // Format the zoned time
-        const formattedZonedTime = format(zonedTime, 'yyyy-MM-dd HH:mm:ssXXX', { timeZone: timezone });
-        setOtherHalfLocalTime(formattedZonedTime);
+        try {
+            const response = await axios.get(url);
+            const data = response.data;
+
+            if (data.status === 'OK') {
+                setOtherHalfLocalTime(data.formatted);
+            } else {
+                console.error('TimeZoneDB API error:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching timezone:', error);
+        }
     };
 
     useEffect(() => {
@@ -261,8 +270,22 @@ const LocationDisplay = () => {
                         style={styles.map}
                         // other props
                     >
-                        <Marker coordinate={location} pinColor="blue" title="My Location" />
-                        <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
+                        <Marker coordinate={location} anchor={{ x: 0.5, y: 1 }} title="My Location">
+                            <View style={styles.customMarkerContainer}>
+                                <Image
+                                    source={{ uri: 'http://chitandaeru.synology.me:80/d71fd1868fe46c90e03de57d9e002b94.jpeg' }}
+                                    style={styles.profileImage}
+                                />
+                            </View>
+                        </Marker>
+                        <Marker coordinate={otherHalfLocation} anchor={{ x: 0.5, y: 1 }} title="Partner's Location">
+                            <View style={styles.customMarkerContainer}>
+                                <Image
+                                    source={{ uri: 'http://chitandaeru.synology.me:80/ef5da24618cefcaaf4d159c8a40e20ca.jpeg' }}
+                                    style={styles.profileImage}
+                                />
+                            </View>
+                        </Marker>
                     </MapView>
                     <SafeAreaView style={styles.overlay}>
                         <View style={styles.partnerTimeContainer}>
@@ -323,6 +346,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff', // White background for the partner permission screen
+    },
+    customMarkerContainer: {
+        alignItems: 'center',
+    },
+    profileImage: {
+        width: 40, // Adjust size as needed
+        height: 40, // Adjust size as needed
+        borderRadius: 20, // Half of width and height for circle shape
+        borderWidth: 2,
+        borderColor: 'white',
     },
 });
 
