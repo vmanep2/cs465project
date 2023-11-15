@@ -29,8 +29,8 @@ const Tabs = () => {
     screenOptions={{
       headerShown: false,
       tabBarActiveTintColor: "#e91d63",
-      tabBarInactiveTintColor: "#FFB6C1",
-      tabBarLabelStyle: { fontSize: 11,fontFamily: 'balsamiq-sans-bold' },
+      tabBarInactiveTintColor: "#777",
+      tabBarLabelStyle: { fontSize: 12,fontFamily: 'balsamiq-sans-bold' },
       tabBarStyle: {
         position: "absolute",
         backgroundColor: "rgba(255, 228, 225, 0.75)",

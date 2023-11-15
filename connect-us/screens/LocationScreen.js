@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject, // Make the map extend to the edges
     },
     overlay: {
+        marginTop: 20,
         justifyContent: 'space-between', // Space children out between top and bottom
         padding: 10, // Add padding if you want to avoid the notch slightly
     },
