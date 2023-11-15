@@ -17,32 +17,67 @@ import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const Tabs = () => {
   return (
-      <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: "#e91d63",
-            tabBarLabelStyle: { fontSize: 11, color: "#e91d63" },
-            tabBarStyle: {
-              position: "absolute",
-              backgroundColor: "#666666",
-              borderTopWidth: 0,
-              color: "#e91d63",
+  <Tab.Navigator
+    screenOptions={{
+      headerShown: false,
+      tabBarActiveTintColor: "#e91d63",
+      tabBarInactiveTintColor: "#FFB6C1",
+      tabBarLabelStyle: { fontSize: 11,fontFamily: 'balsamiq-sans-bold' },
+      tabBarStyle: {
+        position: "absolute",
+        backgroundColor: "rgba(255, 228, 225, 0.75)",
+        borderTopWidth: 0,
+        color: "#e91d63",
+      },
+    }}
+  >
+    <Tab.Screen 
+      name="Home" 
+      component={HomeScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons name="home" color={color} size={size} />
+        ),
+      }} 
+    />
+    <Tab.Screen 
+      name="Diary" 
+      component={DiaryScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons name="book" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen 
+      name="Location" 
+      component={LocationScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons name="location-on" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen 
+      name="TimeCapsule" 
+      component={HomeScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons name="hourglass-bottom" color={color} size={size} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
+);
 
-            },
-          }}
-      >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Diary" component={DiaryScreen} />
-        <Tab.Screen name="Location" component={LocationScreen} />
-
-      </Tab.Navigator>
-  );
 };
 
 
