@@ -50,12 +50,15 @@ export default function AddLogScreen({ route }) {
       console.log(images);
       console.log(userId);
       for (let i = 0; i < images.length; i++) {
+        // Parse the filename out of its directory
         const filename = images[i]["uri"].substring(
           images[i]["uri"].lastIndexOf("/") + 1
         );
+        // Create directory string for location in firebase storage
         const userDirectory = "users/" + userId["uid"] + "/";
+        // Create reference for firebase to know where to upload the file/image
         const picRef = ref(storage, userDirectory + filename);
-
+        // Use reference to upload
         uploadBytes(picRef, filename).then((snapshot) => {
           console.log("uploaded!");
         });
