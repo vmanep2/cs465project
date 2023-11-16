@@ -36,7 +36,8 @@
     "react-native-maps": "1.7.1",
     "react-native-safe-area-context": "4.6.3",
     "react-native-ui-lib": "^7.9.1",
-    "expo-haptics": "~12.4.0"
+    "expo-haptics": "~12.4.0",
+    "@react-native-community/datetimepicker": "7.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
