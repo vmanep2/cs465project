@@ -21,7 +21,7 @@ return (
         return (
             <View style={{width: ITEM_LENGTH}}>
             <View style={styles.itemContent}>
-                <Image source={{uri: item.uri}} style={styles.itemImage} />
+                <Image source={{uri: item}} style={styles.itemImage} />
                 {/* <Text style={styles.itemText} numberOfLines={1}>
                     {item.title}
                 </Text> */}

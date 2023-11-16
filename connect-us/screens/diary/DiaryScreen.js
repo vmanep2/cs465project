@@ -16,11 +16,15 @@ export default function DiaryScreen({ route }) {
         setUserId(route.params);
     });
 
-    return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="ViewMemory" component={ViewMemory} initialParams={userId} />
-            <Stack.Screen name="AddLogScreen" component={AddLogScreen} initialParams={userId} />
-            <Stack.Screen name="CalendarView" component={CalendarView} initialParams={userId} />
-        </Stack.Navigator>
-    );
+    if (userId) {
+        return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="ViewMemory" component={ViewMemory} initialParams={userId} />
+                <Stack.Screen name="AddLogScreen" component={AddLogScreen} initialParams={userId} />
+                <Stack.Screen name="CalendarView" component={CalendarView} initialParams={userId} />
+            </Stack.Navigator>
+        );
+    }
+   
+    return (<></>);
 }

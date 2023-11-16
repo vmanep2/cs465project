@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Ionicons } from '@expo/vector-icons';
 
 import ImageCarousel from '../utils/ImageCarousel'
-
-import { db } from '../../firebaseConfig';
+import { db, storage } from '../../firebaseConfig';
 import FAB from '../utils/FAB'
 
 /**
@@ -13,36 +13,18 @@ import FAB from '../utils/FAB'
  * #1: Add delete button for memory
  * #2: Figure out how to make ViewMemory dynamically linked to calendar
  * #3: Make the calendar
- * #4: Figure out how to render images from firebase
- * #5: Storage in firebase
  * #6: Enhancement idea: figure out how to make the app actually work for the partner
  */
 
-const data = [
-    {
-      uri: 'https://images.unsplash.com/photo-1607326957431-29d25d2b386f',
-    }, // https://unsplash.com/photos/Jup6QMQdLnM
-    {
-      uri: 'https://images.unsplash.com/photo-1512238701577-f182d9ef8af7',
-    }, // https://unsplash.com/photos/oO62CP-g1EA
-    {
-      uri: 'https://images.unsplash.com/photo-1627522460108-215683bdc9f6',
-    }, // https://unsplash.com/photos/gKMmJEvcyA8
-    {
-      uri: 'https://images.unsplash.com/photo-1587814213271-7a6625b76c33',
-    }, // https://unsplash.com/photos/N7zBDF1r7PM
-    {
-      uri: 'https://images.unsplash.com/photo-1588628566587-dbd176de94b4',
-    }, // https://unsplash.com/photos/GsGZJMK0bJc
-    {
-      uri: 'https://images.unsplash.com/photo-1501577316686-a5cbf6c1df7e',
-    }, // https://unsplash.com/photos/coIBOiWBPjk
-  ];
-
 export default function ViewMemory({ route, navigation }) {
+
+    const queryDate = new Date(); // TODO: Make this dynamic so that ViewMemory can be rendered from calendar
+    queryDate.setHours(0, 0, 0, 0); // We're only interested in the date portion
+
     const [memoryCount, setMemoryCount] = useState(0);
     const [uriList, setUriList] = useState([]);
     const [memoryTitle, setMemoryTitle] = useState("Ski trip!!");
+    const [userId, setUserId] = useState(null);
 
     const handleAddButtonPress = () => {
         navigation.navigate("AddLogScreen");
@@ -53,20 +35,44 @@ export default function ViewMemory({ route, navigation }) {
     }
 
     useEffect(() => {
+        setUserId(route.params);
+
         const fetchMemories = async () => {
             let count = 0;
-            const querySnapshot = await getDocs(collection(db, "memories"));
+            const querySnapshot = await getDocs(collection(db, "users", userId.uid, "memories"));
 
-            querySnapshot.forEach((doc) => {
-                count += 1;
-                console.log(doc.id, " => ", doc.data());
+            querySnapshot.forEach(async (doc) => {
+                let data = doc.data();
+                console.log(doc.id, " => ", data);
+
+                let memoryDate = new Date(data["date"]["seconds"] * 1000);
+                memoryDate.setHours(0, 0, 0, 0);
+
+                if (memoryDate.getTime() == queryDate.getTime()) {
+                    count += 1;
+                    
+                    let downloadImageUriList = [];
+
+                    for (let i = 0; i < data["uri"].length; i++) {
+                        const imageURI = await getDownloadURL(ref(storage, data["uri"][i]))
+                        downloadImageUriList.push(imageURI);
+                    }
+
+                    setMemoryTitle(data["caption"]);
+                    setUriList(downloadImageUriList);
+
+                    console.log(downloadImageUriList)
+                }
             });
-
+            
             setMemoryCount(count);
         }
 
-        fetchMemories()
-    })
+        if (userId) {
+            fetchMemories()
+        }
+
+    }, [userId])
 
     if (memoryCount == 0) {
         return (
@@ -97,7 +103,7 @@ export default function ViewMemory({ route, navigation }) {
             
             <View style={styles.container}>
                 <Text style={styles.heading2}>Today</Text>
-                <ImageCarousel data={data} />
+                <ImageCarousel data={uriList} />
                 <Text style={styles.captiontext}>{memoryTitle}</Text>
             </View>
             <FAB onPress={handleAddButtonPress} title="+" />
