@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 
 export default function CalendarView() {
 
-    const handleAddButtonPress = ({navigation}) => {
+    const handleAddButtonPress = ({route, navigation}) => {
         navigation.navigate("ViewMemory");
     }
 

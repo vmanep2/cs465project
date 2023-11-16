@@ -1,17 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
+import { Image, TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
+
+import ImageCarousel from '../utils/ImageCarousel'
 
 import { db } from '../../firebaseConfig';
 import FAB from '../utils/FAB'
 
-export default function ViewMemory({navigation}) {
+const data = [
+    {
+      uri: 'https://images.unsplash.com/photo-1607326957431-29d25d2b386f',
+    }, // https://unsplash.com/photos/Jup6QMQdLnM
+    {
+      uri: 'https://images.unsplash.com/photo-1512238701577-f182d9ef8af7',
+    }, // https://unsplash.com/photos/oO62CP-g1EA
+    {
+      uri: 'https://images.unsplash.com/photo-1627522460108-215683bdc9f6',
+    }, // https://unsplash.com/photos/gKMmJEvcyA8
+    {
+      uri: 'https://images.unsplash.com/photo-1587814213271-7a6625b76c33',
+    }, // https://unsplash.com/photos/N7zBDF1r7PM
+    {
+      uri: 'https://images.unsplash.com/photo-1588628566587-dbd176de94b4',
+    }, // https://unsplash.com/photos/GsGZJMK0bJc
+    {
+      uri: 'https://images.unsplash.com/photo-1501577316686-a5cbf6c1df7e',
+    }, // https://unsplash.com/photos/coIBOiWBPjk
+  ];
+
+export default function ViewMemory({ route, navigation }) {
     const [memoryCount, setMemoryCount] = useState(0);
+    const [uriList, setUriList] = useState(["../../assets/empty.jpg", "../../assets/empty.jpg"]);
     const [memoryTitle, setMemoryTitle] = useState("Ski Trip!");
 
     const handleAddButtonPress = () => {
-        navigation.navigate("AddMemory");
+        navigation.navigate("AddLogScreen");
     }
 
     const handleCalendarView = () => {
@@ -54,20 +78,21 @@ export default function ViewMemory({navigation}) {
 
     return (
         <View style={styles.frame}>
-            <ScrollView>
-                <View style={styles.rowcontainer}>
-                    <Text style={styles.heading}>Diary</Text>
-                    <TouchableOpacity onPress={handleCalendarView}>
-                        <Ionicons name="calendar-outline" size={30} color="black" />
-                    </TouchableOpacity>
-                </View>
-                
-                <View style={styles.container}>
-                    <Text style={styles.heading2}>Today</Text>
-                    <Ionicons name="boat-outline" size={200} color="black" />
-                    <Text style={styles.heading2}>{memoryTitle}</Text>
-                </View>
-            </ScrollView>
+            <View style={styles.rowcontainer}>
+                <Text style={styles.heading}>Diary</Text>
+                <TouchableOpacity onPress={handleCalendarView}>
+                    <Ionicons name="calendar-outline" size={30} color="black" />
+                </TouchableOpacity>
+            </View>
+            
+            <View style={styles.container}>
+                <Text style={styles.heading2}>Today</Text>
+                {/* <View style={styles.polaroidframe}>
+                    <Text style={styles.captiontext}>{memoryTitle}</Text>
+                </View> */}
+                <ImageCarousel data={data} />
+                <Text style={styles.captiontext}>{memoryTitle}</Text>
+            </View>
             <FAB onPress={handleAddButtonPress} title="+" />
         </View>
     );
@@ -78,11 +103,10 @@ const styles = StyleSheet.create({
     frame: {
         flex: 1,
         marginTop: 30,
-        // backgroundColor: '#235'
     },
     rowcontainer: {
         paddingVertical: 15,
-        paddingHorizontal: 20,
+        paddingHorizontal: 30,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -92,23 +116,38 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 50,
     },
     container: {
         flex: 1,
-        paddingHorizontal: 20,
-        marginBottom: 50,
+        paddingHorizontal: 15,
+        marginTop: '10%',
     },
     heading: {
       fontSize: 28,
       fontWeight: 'bold'
     },
     heading2: {
-      fontSize: 22,
-      marginTop: 30,
-      marginBottom: 40
+      textAlignVertical: "center",
+      textAlign: "center",
+      fontSize: 16,
+      marginTop: 20,
+      marginBottom: 20
     },
+    captiontext: {
+        fontSize: 22,
+        marginTop: 20,
+        paddingHorizontal: 15,
+        fontWeight: 'bold',
+        // color: '#555'
+      },
     paragraph: {
       fontSize: 18,
+    },
+    polaroidframe: {
+        backgroundColor: 'white',
+        maxWidth: '100%',
+        elevation: 3,
+        padding: 20,
+        // backgroundColor: '#214'
     }
 });

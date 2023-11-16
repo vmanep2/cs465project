@@ -12,7 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { storage } from "../../firebaseConfig";
 import { ref, uploadBytes } from "firebase/storage";
 
-export default function AddLogScreen({ route }) {
+export default function AddLogScreen({ route, navigation }) {
   const insets = useSafeArea();
   const [images, setImages] = useState(null);
   const [description, setDescription] = useState("");
