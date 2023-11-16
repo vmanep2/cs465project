@@ -30,6 +30,7 @@ const Tabs = ({ user }) => {
       headerShown: false,
       tabBarActiveTintColor: "#e91d63",
       tabBarInactiveTintColor: "#777",
+      tabBarHideOnKeyboard: true,
       tabBarLabelStyle: { fontSize: 12,fontFamily: 'balsamiq-sans-bold' },
       tabBarStyle: {
         position: "absolute",

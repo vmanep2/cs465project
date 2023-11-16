@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
   View,
   Text,
   Dimensions,
@@ -9,13 +10,15 @@ import {
   TextInput,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../../firebaseConfig";
 import { ref, uploadBytes } from "firebase/storage";
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function AddLogScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();
@@ -28,13 +31,11 @@ export default function AddLogScreen({ route, navigation }) {
 
   useEffect(() => {
     setUserId(route.params);
-    console.log(userId);
   });
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: true,
@@ -53,23 +54,53 @@ export default function AddLogScreen({ route, navigation }) {
     navigation.goBack();
   }
 
-  const showDate = () => {
+  const unhideDatePicker = () => {
     setShowDatePicker(true);
   }
 
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
+  const handleConfirm = (date) => {
+    setDate(date);
     setShowDatePicker(false);
-  };
+  }
+
+  const handleCancel = () => {
+    setShowDatePicker(false);
+  }
 
   const uploadMedia = async () => {
+    // Sanity check!!
+    // Prevent upload if user has not provided photos or user has not entered a description
+    
+    let descriptionInputString = description.trim();
+
+    if (images == null) {
+        if (descriptionInputString.length == 0) {
+            Alert.alert('Error!', 'You have not added any photos or description text');
+        
+        } else {
+            Alert.alert('Error!', 'You have not added any photos');
+        }
+        return;
+    }
+
+    if (descriptionInputString.length == 0) {
+        Alert.alert('Error!', 'You have not added any description text');
+        return;
+    }
+
     setUploading(true);
 
     try {
-      console.log(images);
-      console.log(userId);
+    //   console.log(images);
+    //   console.log(userId);
+
+      let uriList = [];
+
+      // File upload logic
       for (let i = 0; i < images.length; i++) {
+        const response = await fetch(images[i].uri)
+        const blob = await response.blob()
+
         // Parse the filename out of its directory
         const filename = images[i]["uri"].substring(
           images[i]["uri"].lastIndexOf("/") + 1
@@ -79,12 +110,33 @@ export default function AddLogScreen({ route, navigation }) {
         // Create reference for firebase to know where to upload the file/image
         const picRef = ref(storage, userDirectory + filename);
         // Use reference to upload
-        uploadBytes(picRef, filename).then((snapshot) => {
-          console.log("uploaded!");
+        uploadBytes(picRef, blob).then((snapshot) => {
+          console.log("Uploaded file to Firebase storage!");
         });
+
+        uriList.push(userDirectory + filename);
       }
+
+      console.log(uriList);
+            
+      const docRef = await addDoc(collection(db, 'users', userId.uid, 'memories'), {
+        caption: description,
+        date: date,
+        uri: uriList
+      });
+      console.log('Updated in firestore with id ' + docRef.id);
+
+
+      // Success handling
+    
+      Alert.alert('Success!', 'Memory has been added');
+
       setUploading(false);
+      setDescription("");
+      setDate(new Date());
       setImages(null);
+      goBack();
+    
     } catch (error) {
       console.error(error);
       setUploading(false);
@@ -108,39 +160,20 @@ export default function AddLogScreen({ route, navigation }) {
             Add Log
         </Text>
         <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
-            Select date
+            Add description
         </Text>
-        <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity onPress={showDate}>
-                <Ionicons name="calendar-outline" size={40} color="black" />
-            </TouchableOpacity>
-            <View style={{ paddingHorizontal: 5 }} />
-            {!showDatePicker && (
-                <TextInput
+            <TextInput
                 style={{
-                    height: 40,
-                    width: 150,
+                    height: 50,
                     borderWidth: 1,
                     borderColor: "#ccc",
                     paddingHorizontal: 15,
                     paddingVertical: 10,
                 }}
-                editable={false}
-                value={date.toLocaleDateString()}
+                placeholder="Describe your memory"
+                value={description}
+                onChangeText={setDescription}
             />
-            )} 
-
-            {showDatePicker && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={'date'}
-                    onChange={onDateChange}
-                />
-            )}   
-        </View>
-        
-
         <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
             Select images
         </Text>
@@ -176,21 +209,34 @@ export default function AddLogScreen({ route, navigation }) {
             )}
         </View>
         <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
-            Add description
+            Select date
         </Text>
-        <TextInput
-            style={{
-                height: 50,
-                borderWidth: 1,
-                borderColor: "#ccc",
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-            }}
-            placeholder="Describe your memory"
-            value={description}
-            onChangeText={setDescription}
-        />
-        
+        <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity onPress={unhideDatePicker}>
+                <Ionicons name="calendar-outline" size={40} color="black" />
+            </TouchableOpacity>
+            <View style={{ paddingHorizontal: 5 }} />
+            <TextInput
+                style={{
+                    height: 40,
+                    width: 150,
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    paddingHorizontal: 15,
+                    paddingVertical: 10,
+                }}
+                editable={false}
+                value={date.toLocaleDateString()}
+            />
+            <DateTimePickerModal 
+                date={date}
+                isVisible={showDatePicker}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                themeVariant="light"
+            />
+        </View>
         <View
             style={{
             flexDirection: 'row',

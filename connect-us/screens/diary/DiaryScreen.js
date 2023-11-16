@@ -14,7 +14,6 @@ export default function DiaryScreen({ route }) {
 
     useEffect(() => {
         setUserId(route.params);
-        console.log(userId);
     });
 
     return (
