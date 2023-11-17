@@ -102,7 +102,7 @@ export default function ViewMemory({ route, navigation }) {
             </View>
             
             <View style={styles.container}>
-                <Text style={styles.heading2}>Today</Text>
+                <Text style={styles.heading2}>November 14, 2023</Text>
                 <ImageCarousel data={uriList} />
                 <Text style={styles.captiontext}>{memoryTitle}</Text>
             </View>
