@@ -287,7 +287,7 @@ const LocationDisplay = () => {
                     <Text style={styles.permissionMessage}>
                         {locationPermissionMessage}
                     </Text>
-                    <Button title="Enable Location" onPress={enableMyLocation} />
+                    <Button color='#e91d63' title="Enable Location" onPress={enableMyLocation} />
                 </View>
             ) : partnerPermission ? (
                 // MapView and other components

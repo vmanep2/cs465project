@@ -16,7 +16,6 @@ import LocationScreen from "./screens/LocationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
 import TimeCapsuleScreen from "./screens/TimeCapsuleScreen";
-import AddLogScreen from "./screens/diary/AddLogScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -31,6 +30,7 @@ const Tabs = ({ user }) => {
       headerShown: false,
       tabBarActiveTintColor: "#e91d63",
       tabBarInactiveTintColor: "#777",
+      tabBarHideOnKeyboard: true,
       tabBarLabelStyle: { fontSize: 12,fontFamily: 'balsamiq-sans-bold' },
       tabBarStyle: {
         position: "absolute",
@@ -57,6 +57,7 @@ const Tabs = ({ user }) => {
           <MaterialIcons name="book" color={color} size={size} />
         ),
       }}
+      initialParams={{ uid: user?.uid }}
     />
     <Tab.Screen 
       name="Location" 
@@ -76,11 +77,6 @@ const Tabs = ({ user }) => {
         ),
       }}
     />
-    <Tab.Screen
-        name="AddLog"
-        component={AddLogScreen}
-        initialParams={{ uid: user?.uid }}
-      />
   </Tab.Navigator>
 );
 
