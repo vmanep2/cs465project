@@ -69,7 +69,7 @@ const Tabs = ({ user }) => {
     />
     <Tab.Screen 
       name="TimeCapsule" 
-      component={TimeCapsuleScreen}
+      children={() => <TimeCapsuleScreen user={user.uid} />}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons name="hourglass-bottom" color={color} size={size} />
