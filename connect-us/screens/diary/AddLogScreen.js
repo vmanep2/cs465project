@@ -106,7 +106,7 @@ export default function AddLogScreen({ route, navigation }) {
           images[i]["uri"].lastIndexOf("/") + 1
         );
         // Create directory string for location in firebase storage
-        const userDirectory = "users/" + userId["uid"] + "/";
+        const userDirectory = "users/" + userId["uid"] + "/memories/";
         // Create reference for firebase to know where to upload the file/image
         const picRef = ref(storage, userDirectory + filename);
         // Use reference to upload
@@ -156,7 +156,7 @@ export default function AddLogScreen({ route, navigation }) {
       <View style={{flex: 1, 
             // justifyContent: "center",
             marginBottom: 50}}>
-        <Text style={{ fontSize: 28, fontWeight: 'bold', fontFamily: 'balsamiq-sans'}}>
+        <Text style={{ fontSize: 28, fontFamily: 'balsamiq-sans'}}>
             Add Log
         </Text>
         <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10, fontFamily: 'balsamiq-sans'}}>

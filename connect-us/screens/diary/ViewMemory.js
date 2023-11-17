@@ -12,7 +12,6 @@ import FAB from '../utils/FAB'
  * TODOs:
  * #1: Add delete button for memory
  * #2: Figure out how to make ViewMemory dynamically linked to calendar
- * #3: Make the calendar
  * #6: Enhancement idea: figure out how to make the app actually work for the partner
  */
 
@@ -102,7 +101,7 @@ export default function ViewMemory({ route, navigation }) {
             </View>
             
             <View style={styles.container}>
-                <Text style={styles.heading2}>November 14, 2023</Text>
+                <Text style={styles.heading2}>Today</Text>
                 <ImageCarousel data={uriList} />
                 <Text style={styles.captiontext}>{memoryTitle}</Text>
             </View>

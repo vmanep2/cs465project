@@ -78,7 +78,7 @@ const pickImage = async () => {
           </View>
         ) : (
           <View style={styles.circularContainer}>
-            <Button style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
+            <Button color='#e91d63' style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
           </View>
         )}
       </View>
