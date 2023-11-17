@@ -137,23 +137,25 @@ const styles = StyleSheet.create({
     },
     heading: {
       fontSize: 28,
-      fontWeight: 'bold'
+      fontFamily: "balsamiq-sans",
     },
     heading2: {
       textAlignVertical: "center",
       textAlign: "center",
       fontSize: 16,
       marginTop: 20,
-      marginBottom: 20
+      marginBottom: 20,
+      fontFamily: "balsamiq-sans",
     },
     captiontext: {
         fontSize: 22,
         marginTop: 20,
         paddingHorizontal: 15,
-        fontWeight: 'bold',
-        // color: '#555'
+        fontFamily: "balsamiq-sans",
+      // color: '#555'
       },
     paragraph: {
       fontSize: 18,
+      fontFamily: "balsamiq-sans",
     }
 });

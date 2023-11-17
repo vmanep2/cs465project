@@ -22,7 +22,7 @@ export default function CalendarView({route, navigation}) {
             </View>
 
             <View style={styles.calendarcontainer}>
-                <Text style={{marginBottom: 20}}>
+                <Text style={{marginBottom: 20, fontFamily: 'balsamiq-sans'}}>
                     Select a date to view memory
                 </Text>
                 <Calendar
@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     },
     heading: {
       fontSize: 28,
-      fontWeight: 'bold'
+      fontFamily: 'balsamiq-sans'
+
     },
     paragraph: {
       fontSize: 18,

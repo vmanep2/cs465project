@@ -156,10 +156,10 @@ export default function AddLogScreen({ route, navigation }) {
       <View style={{flex: 1, 
             // justifyContent: "center",
             marginBottom: 50}}>
-        <Text style={{ fontSize: 28, fontWeight: 'bold'}}>
+        <Text style={{ fontSize: 28, fontWeight: 'bold', fontFamily: 'balsamiq-sans'}}>
             Add Log
         </Text>
-        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
+        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10, fontFamily: 'balsamiq-sans'}}>
             Add description
         </Text>
             <TextInput
@@ -169,12 +169,13 @@ export default function AddLogScreen({ route, navigation }) {
                     borderColor: "#ccc",
                     paddingHorizontal: 15,
                     paddingVertical: 10,
+                    fontFamily: 'balsamiq-sans'
                 }}
                 placeholder="Describe your memory"
                 value={description}
                 onChangeText={setDescription}
             />
-        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
+        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10, fontFamily: 'balsamiq-sans'}}>
             Select images
         </Text>
         <View
@@ -208,7 +209,7 @@ export default function AddLogScreen({ route, navigation }) {
             </TouchableOpacity>
             )}
         </View>
-        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10}}>
+        <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10, fontFamily: 'balsamiq-sans'}}>
             Select date
         </Text>
         <View style={{flexDirection: 'row'}}>
@@ -224,6 +225,7 @@ export default function AddLogScreen({ route, navigation }) {
                     borderColor: "#ccc",
                     paddingHorizontal: 15,
                     paddingVertical: 10,
+                    fontFamily: 'balsamiq-sans'
                 }}
                 editable={false}
                 value={date.toLocaleDateString()}
@@ -255,7 +257,7 @@ export default function AddLogScreen({ route, navigation }) {
             }}
             onPress={uploadMedia}
             >
-            <Text style={{ color: "white", fontSize: 20 }}>Post</Text>
+            <Text style={{ color: "white", fontSize: 20, fontFamily: 'balsamiq-sans' }}>Post</Text>
             </TouchableOpacity>
             <TouchableOpacity
             style={{
@@ -268,7 +270,7 @@ export default function AddLogScreen({ route, navigation }) {
             }}
             onPress={goBack}
             >
-            <Text style={{ color: "white", fontSize: 20 }}>Cancel</Text>
+            <Text style={{ color: "white", fontSize: 20, fontFamily: 'balsamiq-sans' }}>Cancel</Text>
             </TouchableOpacity>
         </View>
         </View>
