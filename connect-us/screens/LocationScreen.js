@@ -73,6 +73,7 @@ const LocationDisplay = () => {
 
         if (systemPermissionStatus.status !== 'granted' || !dbPermissionStatus) {
             // Set the UI to show the enable location button and message
+            setPermission(true);
             setShowEnableLocationButton(true);
             setLocationPermissionMessage('Your location is not enabled. Enable it to share your location.');
             setLoading(false);
@@ -173,6 +174,7 @@ const LocationDisplay = () => {
 
     useEffect(() => {
         if (!permission) {
+            setPermission(true);
             setShowEnableLocationButton(true);
             setLocationPermissionMessage('Your location is not enabled. Enable it to share your location.');
         }
@@ -267,6 +269,7 @@ const LocationDisplay = () => {
         } finally {
             setLoading(false);
         }
+        setShowEnableLocationButton(false);
         await checkAndRequestPermissions(userId);
     };
 
@@ -277,7 +280,6 @@ const LocationDisplay = () => {
             </View>
         );
     }
-
     return (
         <View style={styles.container}>
             {showEnableLocationButton || !permission ? (
@@ -349,20 +351,28 @@ const styles = StyleSheet.create({
         marginTop: 20,
         justifyContent: 'space-between', // Space children out between top and bottom
         padding: 10, // Add padding if you want to avoid the notch slightly
+        alignItems: "center",
     },
     partnerTimeContainer: {
-        alignSelf: 'center', // Center the time container horizontally
-        padding: 10,
-        position: 'absolute',
-        top: Platform.select({ ios: 45, android: 10 }), // Adjust top for iOS notch
-        width: '100%',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)', // White with 50% opacity
-        borderRadius: 15
+        position: "relative",
+        backgroundColor: "rgba(255, 250, 240, 0.9)",
+        padding: 10.5,
+        borderRadius: 10,
+        width: 290,
+        alignItems: "center",
+        marginTop: -30,
+        fontFamily: "balsamiq-sans",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
     },
 
     partnerTimeText: {
-        fontSize: 18, // Increased font size
+        fontSize: 14, // Increased font size
         fontFamily: "balsamiq-sans",
         // Add other text styles if needed
     },
