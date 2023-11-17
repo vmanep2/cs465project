@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -16,14 +16,11 @@ import FAB from '../utils/FAB'
  */
 
 export default function ViewMemory({ route, navigation }) {
-
-    const queryDate = new Date(); // TODO: Make this dynamic so that ViewMemory can be rendered from calendar
-    queryDate.setHours(0, 0, 0, 0); // We're only interested in the date portion
-
     const [memoryCount, setMemoryCount] = useState(0);
     const [uriList, setUriList] = useState([]);
-    const [memoryTitle, setMemoryTitle] = useState("Ski trip!!");
-    const [userId, setUserId] = useState(null);
+    const [memoryTitle, setMemoryTitle] = useState("");
+    const [date, setDate] = useState("");
+    const [userData, setUserData] = useState(null);
 
     const handleAddButtonPress = () => {
         navigation.navigate("AddLogScreen");
@@ -33,45 +30,66 @@ export default function ViewMemory({ route, navigation }) {
         navigation.navigate("CalendarView");
     }
 
-    useEffect(() => {
-        setUserId(route.params);
+    const fetchMemories = async () => {
+        console.log("Inside fetch memories")
 
-        const fetchMemories = async () => {
-            let count = 0;
-            const querySnapshot = await getDocs(collection(db, "users", userId.uid, "memories"));
+        let count = 0;
+        let queryDate = new Date();
+        let dateString = "Today";
 
-            querySnapshot.forEach(async (doc) => {
-                let data = doc.data();
-                console.log(doc.id, " => ", data);
-
-                let memoryDate = new Date(data["date"]["seconds"] * 1000);
-                memoryDate.setHours(0, 0, 0, 0);
-
-                if (memoryDate.getTime() == queryDate.getTime()) {
-                    count += 1;
-                    
-                    let downloadImageUriList = [];
-
-                    for (let i = 0; i < data["uri"].length; i++) {
-                        const imageURI = await getDownloadURL(ref(storage, data["uri"][i]))
-                        downloadImageUriList.push(imageURI);
-                    }
-
-                    setMemoryTitle(data["caption"]);
-                    setUriList(downloadImageUriList);
-
-                    console.log(downloadImageUriList)
-                }
-            });
-            
-            setMemoryCount(count);
+        if (userData.targetDate) {
+            queryDate = new Date(userData.targetDate + " 00:00:00");
+            dateString = queryDate.toDateString();
         }
+        
+        queryDate.setHours(0, 0, 0, 0); // We're only interested in the date portion
+        
+        const querySnapshot = await getDocs(collection(db, "users", userData.uid, "memories"));
 
-        if (userId) {
+        querySnapshot.forEach(async (doc) => {
+            let data = doc.data();
+
+            let memoryDate = new Date(data["date"]["seconds"] * 1000);
+            memoryDate.setHours(0, 0, 0, 0);
+
+            // console.log("memoryDate" + memoryDate.getTime())
+            // console.log("queryDate" + queryDate.getTime())
+
+            if (memoryDate.getTime() == queryDate.getTime()) {
+                count += 1;
+                
+                let downloadImageUriList = [];
+
+                for (let i = 0; i < data["uri"].length; i++) {
+                    const imageURI = await getDownloadURL(ref(storage, data["uri"][i]))
+                    downloadImageUriList.push(imageURI);
+                }
+                
+                setDate(dateString);
+                setMemoryTitle(data["caption"]);
+                setUriList(downloadImageUriList);
+
+                // console.log(downloadImageUriList)
+           
+            }
+        });
+        
+        setMemoryCount(count);
+    }
+
+    useEffect(() => {
+        if (userData) {
             fetchMemories()
         }
 
-    }, [userId])
+    }, [userData])
+
+    useEffect(() => {
+        // console.log("inside use effect bare")
+        // console.log(route.params);
+        setUserData(route.params);
+
+    })
 
     if (memoryCount == 0) {
         return (
@@ -101,7 +119,7 @@ export default function ViewMemory({ route, navigation }) {
             </View>
             
             <View style={styles.container}>
-                <Text style={styles.heading2}>Today</Text>
+                <Text style={styles.heading2}>{date}</Text>
                 <ImageCarousel data={uriList} />
                 <Text style={styles.captiontext}>{memoryTitle}</Text>
             </View>

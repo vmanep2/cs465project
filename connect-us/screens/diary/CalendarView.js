@@ -31,9 +31,10 @@ const dates = [
 export default function CalendarView({route, navigation}) {
     const [userId, setUserId] = useState();
     const [selected, setSelected] = useState('');
+    const [marked, setMarked] = useState();
 
     const handleViewMemoryPress = () => {
-        navigation.navigate("ViewMemory");
+        navigation.navigate("ViewMemory", { uid: userId.uid, targetDate: selected });
     }
 
     useEffect(() => {

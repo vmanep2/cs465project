@@ -41,7 +41,7 @@ export default function AddLogScreen({ route, navigation }) {
       allowsMultipleSelection: true,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
       setImages(result.assets);
@@ -51,7 +51,7 @@ export default function AddLogScreen({ route, navigation }) {
   };
 
   const goBack = () => {
-    navigation.goBack();
+    navigation.navigate("ViewMemory");
   }
 
   const unhideDatePicker = () => {
@@ -106,18 +106,18 @@ export default function AddLogScreen({ route, navigation }) {
           images[i]["uri"].lastIndexOf("/") + 1
         );
         // Create directory string for location in firebase storage
-        const userDirectory = "users/" + userId["uid"] + "/memories/";
+        const userDirectory = "users/" + userId.uid + "/memories/";
         // Create reference for firebase to know where to upload the file/image
         const picRef = ref(storage, userDirectory + filename);
         // Use reference to upload
-        uploadBytes(picRef, blob).then((snapshot) => {
+        await uploadBytes(picRef, blob).then((snapshot) => {
           console.log("Uploaded file to Firebase storage!");
         });
 
         uriList.push(userDirectory + filename);
       }
 
-      console.log(uriList);
+    //   console.log(uriList);
             
       const docRef = await addDoc(collection(db, 'users', userId.uid, 'memories'), {
         caption: description,
