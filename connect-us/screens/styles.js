@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     durationContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      width: '100%',
+      width: '70%',
       alignItems: 'center',
     },
     durationInput: {
@@ -158,7 +158,18 @@ const styles = StyleSheet.create({
       right: 0,
       zIndex: 5, 
       backgroundColor: 'red', 
-    }
+    },
+    circularContainer: {
+      width: 200,
+      height: 200,
+      borderRadius: 100,
+      overflow: 'hidden',
+      marginVertical: 20,
+      backgroundColor: '#e0e0e0',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+    },
   });
   
   export default styles;

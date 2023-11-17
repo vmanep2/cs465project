@@ -5,25 +5,24 @@ import styles from './styles';
 
 
 const ProfileScreen = ({ navigation, route }) => {
- // const [profilePicture, setProfilePicture] = useState(null);
- const [firstName, setFirstName] = useState("");
-  const pickImage = async () => {
-   // No permissions request is necessary for launching the image library
-   let result = await ImagePicker.launchImageLibraryAsync({
-     mediaTypes: ImagePicker.MediaTypeOptions.All,
-     allowsEditing: true,
-     aspect: [4, 3],
-     quality: 1,
-   });
+// const [profilePicture, setProfilePicture] = useState(null);
+const [firstName, setFirstName] = useState("");
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    aspect: [4, 3],
+    quality: 1,
+    allowsMultipleSelection: true,
+  });
 
+  console.log(result);
 
-   console.log(result);
-
-
-   if (!result.canceled) {
-     setImage(result.assets[0].uri);
-   }
- };
+  if (!result.canceled) {
+    setImages(result.assets);
+    // console.log(result.assets)
+    //   setImage(result.assets[0].uri);
+  }
+};
 
 
  const navigateToRegisterScreen = () => {
@@ -73,9 +72,16 @@ const ProfileScreen = ({ navigation, route }) => {
 
 
        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-           <Button title="Pick an image from camera roll" onPress={pickImage} />
-           {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-       </View>
+        {image ? (
+          <View style={styles.circularContainer}>
+            <Image source={{ uri: "https://nico-nico-nii.com/pre-defined/user_profile_pic_1" }} style={styles.circularImage} />
+          </View>
+        ) : (
+          <View style={styles.circularContainer}>
+            <Button style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
+          </View>
+        )}
+      </View>
 
 
        <TextInput
@@ -86,6 +92,21 @@ const ProfileScreen = ({ navigation, route }) => {
          style={styles.inputfield}
        />
       
+      <Text style = {{
+        fontSize: 18,
+        fontWeight: '700',
+        marginTop: 12,
+        marginBottom: 12,
+        textAlign: 'center'
+      }}>
+        How long have you and your partner been together?
+      </Text>
+      <View style={styles.durationContainer}>
+          <TextInput style={styles.input} placeholder="Years" keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="Months" keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="Days" keyboardType="numeric" />
+      </View>
+
        <View style={{ width: "100%", alignItems: "center" }}>
          <TouchableOpacity
            onPress={navigateToRegisterScreen}
