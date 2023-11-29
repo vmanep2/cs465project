@@ -136,7 +136,6 @@ const LocationDisplay = () => {
             if (user) {
                 setUserId(user.uid);
                 setFirstName(user.displayName);
-                Alert.alert(firstName);
                 setLoading(true);  // Set loading to true at the start of data fetching
                 fetchData(user.uid);
             } else {
@@ -419,7 +418,7 @@ const styles = StyleSheet.create({
         position: 'absolute', // Position absolutely within parent
         bottom: 100, // Adjust for top-right or use 'bottom' for bottom-right
         right: 10, // Adjust as needed for right alignment
-        backgroundColor: '#ff6347',
+        backgroundColor: '#e91d63',
         padding: 13,
         borderRadius: 5,
         zIndex: 1, // Ensure it's above the map

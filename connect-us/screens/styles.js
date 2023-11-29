@@ -8,18 +8,27 @@ const styles = StyleSheet.create({
     },
     inputfield: {
         backgroundColor: "#cccccc",
-        justifyContent: "center",
-        width: "87%",
-        height: 60,
+        width: "100%", // Adjusted to fit within the screen
+        height: 50, // Reduced height
         color: "white",
-        opacity: 1,
         paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 22,
+        borderRadius: 15, // Reduced border radius
         marginTop: 5,
         marginBottom: 10,
         fontWeight: "700",
-        paddingLeft: 30
+        paddingLeft: 30,
+    },
+    inputfieldmultiline: {
+        backgroundColor: "#cccccc",
+        width: "100%", // Adjusted to fit within the screen
+        height: 100, // Reduced height
+        color: "white",
+        paddingHorizontal: 15,
+        borderRadius: 15, // Reduced border radius
+        marginTop: 5,
+        marginBottom: 10,
+        fontWeight: "700",
+        paddingLeft: 30,
     },
     partnerinputfield: {
         backgroundColor: "#e91d63",
@@ -73,7 +82,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'stretch', 
-      padding: 10, 
+      padding: 10,
     },
     footerButtonContainer: {
       position: 'absolute',
@@ -105,18 +114,23 @@ const styles = StyleSheet.create({
       borderColor: 'gray',
     },
     button: {
-      backgroundColor: 'blue',
-      padding: 10,
-      marginVertical: 12,
+        backgroundColor: '#e91d63',
+        padding: 10,
+        marginVertical: 12,
+        alignItems: 'center',
+        borderRadius: 15,
     },
     buttonText: {
-      color: 'white',
+        fontFamily:"balsamiq-sans",
+        color: 'white',
+        fontWeight: 'bold',
     },
     durationContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '70%',
-      alignItems: 'center',
+        flexDirection: 'column', // Stack inputs vertically
+        justifyContent: 'space-between',
+        width: '100%', // Full width
+        alignItems: 'center',
+        marginBottom: 10,
     },
     durationInput: {
       width: '22%', 
@@ -135,29 +149,58 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     itemContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 10,
-      marginVertical: 5,
+        flex: 1,
+        flexDirection: 'column', // Changed to column
+        justifyContent: 'flex-start', // Align items to the start
+        alignItems: 'flex-start', // Align items to the start
+        padding: 10,
+        marginVertical: 5,
+        backgroundColor: '#D4D5D3',
+        borderRadius: 10,
+        fontFamily: "balsamiq-sans"
     },
     itemTitle: {
-      fontSize: 18,
+        fontSize: 18,
+        fontWeight: 'bold', // Optional: make title bold
+        marginBottom: 5,
+        fontFamily: "balsamiq-sans"
+    },
+    itemText: {
+        fontFamily: "balsamiq-sans"
+    },
+    imageStyle: {
+        width: 100,
+        height: 100,
+        marginVertical: 5, // Space around the image
+    },
+    inlineButton: {
+        backgroundColor: "#e91d63",
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 5,
+    },
+    inlineButtonText: {
+        fontSize: 16, // Adjust as needed
+        color: "#fff", // White text color
+        fontWeight: "bold", // Bold text
+        fontFamily: "balsamiq-sans"
     },
     createContainer: {
-      flexGrow: 1,
-      justifyContent: 'flex-start',
-      // padding: 10,
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        padding: 20,
     },
     buttonContainer: {
-      padding: 10,
-      position: 'absolute', 
-      bottom: 150, 
-      left: 0,
-      right: 0,
-      zIndex: 5, 
-      backgroundColor: 'red', 
+        padding: 10,
+        position: 'absolute',
+        bottom: 150,
+        left: 0,
+        right: 0,
+        zIndex: 5,
+        backgroundColor: 'red',
     },
     circularContainer: {
       width: 200,
