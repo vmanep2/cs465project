@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, ScrollView, Text, Alert } from 'react-native';
+import { View, TextInput, Button, ScrollView, Text, Alert , TouchableOpacity, SafeAreaView} from 'react-native';
 import { db, storage } from '../firebaseConfig'; 
 import { collection, addDoc } from 'firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -69,17 +69,23 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.createContainer}>
-        <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
-        <Button title="Upload Photo" onPress={handlePhotoUpload} />
-        <TextInput style={styles.input} placeholder="Add Text" value={text} multiline onChangeText={setText} />
-        <View style={styles.durationContainer}>
-            <TextInput style={styles.input} placeholder="Years" keyboardType="numeric" onChangeText={(value) => updateDuration('years', value)} />
-            <TextInput style={styles.input} placeholder="Months" keyboardType="numeric" onChangeText={(value) => updateDuration('months', value)} />
-            <TextInput style={styles.input} placeholder="Days" keyboardType="numeric" onChangeText={(value) => updateDuration('days', value)} />
-        </View>
-        <Button style={styles.button} title="Create Time Capsule" onPress={handleCreate} />
-    </ScrollView>
+      <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={styles.createContainer}>
+              <TextInput style={styles.inputfield} placeholder="Title" value={title} onChangeText={setTitle} />
+              <TouchableOpacity style={styles.button} onPress={handlePhotoUpload}>
+                  <Text style={styles.buttonText}>Upload Photo</Text>
+              </TouchableOpacity>
+              <TextInput style={styles.inputfieldmultiline} placeholder="Add Text" value={text} multiline onChangeText={setText} />
+              <View style={styles.durationContainer}>
+                  <TextInput style={styles.inputfield} placeholder="Years" keyboardType="numeric" onChangeText={(value) => updateDuration('years', value)} />
+                  <TextInput style={styles.inputfield} placeholder="Months" keyboardType="numeric" onChangeText={(value) => updateDuration('months', value)} />
+                  <TextInput style={styles.inputfield} placeholder="Days" keyboardType="numeric" onChangeText={(value) => updateDuration('days', value)} />
+              </View>
+              <TouchableOpacity style={styles.button} onPress={handleCreate}>
+                  <Text style={styles.buttonText}>Create Time Capsule</Text>
+              </TouchableOpacity>
+          </ScrollView>
+      </SafeAreaView>
   );
 };
 

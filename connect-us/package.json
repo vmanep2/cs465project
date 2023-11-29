@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/geolocation": "^3.1.0",
@@ -41,7 +42,10 @@
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-paper": "^5.11.3",
     "react-native-safe-area-context": "4.6.3",
-    "react-native-ui-lib": "^7.9.1"
+    "react-native-ui-lib": "^7.9.1",
+    "react-native-web": "~0.19.6",
+    "react-dom": "18.2.0",
+    "@expo/webpack-config": "^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
