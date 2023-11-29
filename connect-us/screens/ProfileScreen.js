@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, KeyboardAvoidingView, TouchableOpacity, Image, image, ScrollView, Button, Platform } from 'react-native';
+import { View, Text, TextInput, KeyboardAvoidingView, TouchableOpacity, Image, image, ScrollView, Button, Platform, FlatList } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import styles from './styles';
 
@@ -7,48 +7,29 @@ import styles from './styles';
 const ProfileScreen = ({ navigation, route }) => {
 // const [profilePicture, setProfilePicture] = useState(null);
 const [firstName, setFirstName] = useState("");
+const [image, setImage] = useState(null);
 const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     aspect: [4, 3],
     quality: 1,
-    allowsMultipleSelection: true,
+    allowsMultipleSelection: false,
   });
 
-  console.log(result);
+  // console.log(result);
 
   if (!result.canceled) {
-    setImages(result.assets);
+    setImage(result.assets);
     // console.log(result.assets)
     //   setImage(result.assets[0].uri);
   }
 };
-
 
  const navigateToRegisterScreen = () => {
    navigation.navigate('Register', {
      firstName: firstName,
    });
  };
-
-
- // const handleImageUpload = () => {
- //   ImagePicker.showImagePicker({
- //     title: 'Select Profile Picture',
- //     storageOptions: {
- //       skipBackup: true,
- //       path: 'images',
- //     },
- //   }, (response) => {
- //     if (response.didCancel) {
- //       console.log('Image picker cancelled');
- //     } else if (response.error) {
- //       console.log('Image picker error:', response.error);
- //     } else {
- //       setProfilePicture(response.uri);
- //     }
- //   });
- // };
 
 
  return (
@@ -81,6 +62,24 @@ const pickImage = async () => {
             <Button color='#e91d63' style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
           </View>
         )}
+        {image ? (
+          <FlatList
+            horizontal
+            data={image}
+            renderItem={({ item }) => (
+            <Image
+              source={{ uri: item.uri }}
+              style={styles.circularContainer}
+            />
+            )}
+            keyExtractor={(_, index) => index.toString()}
+          />
+          ) : (
+          <View style={styles.circularContainer}>
+            <Button color='#e91d63' style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
+          </View>
+        )}
+
       </View>
 
 
