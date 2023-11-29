@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, Button } from 'react-native';
+import { View, Text, FlatList, Image, Button, TouchableOpacity } from 'react-native';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import styles from './styles';
@@ -49,17 +49,19 @@ const ViewTimeCapsule = ({ user }) => {
             <Text style={styles.itemTitle}>Title: {item.title}</Text>
             {isOpened ? (
               <>
-                <Text>Text: {item.text}</Text>
+                <Text style={styles.itemText}>Text: {item.text}</Text>
                 {item.photos && item.photos.map((photo, index) => (
-                  <Image key={index} source={{ uri: photo }} style={{ width: 100, height: 100 }} />
+                  <Image key={index} source={{ uri: photo }} style={styles.imageStyle} />
                 ))}
               </>
             ) : (
               isPastOpeningDate && (
-                <Button
-                  title="Open"
-                  onPress={() => handleOpenCapsule(item.id)}
-                />
+                  <TouchableOpacity
+                      style={styles.inlineButton}
+                      onPress={() => handleOpenCapsule(item.id)}
+                  >
+                      <Text style={styles.inlineButtonText}>Open</Text>
+                  </TouchableOpacity>
               )
             )}
             <Text>Opening Date: {openingDate.toLocaleDateString()}</Text>
