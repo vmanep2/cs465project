@@ -135,6 +135,8 @@ const LocationDisplay = () => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUserId(user.uid);
+                setFirstName(user.displayName);
+                Alert.alert(firstName);
                 setLoading(true);  // Set loading to true at the start of data fetching
                 fetchData(user.uid);
             } else {
@@ -280,6 +282,7 @@ const LocationDisplay = () => {
             </View>
         );
     }
+
     return (
         <View style={styles.container}>
             {showEnableLocationButton || !permission ? (
