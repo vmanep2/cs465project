@@ -71,15 +71,15 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
   return (
       <SafeAreaView style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.createContainer}>
-              <TextInput style={styles.inputfield} placeholder="Title" value={title} onChangeText={setTitle} />
+              <TextInput style={styles.timecapsuleinputfield} placeholder="Title" value={title} onChangeText={setTitle} />
               <TouchableOpacity style={styles.button} onPress={handlePhotoUpload}>
                   <Text style={styles.buttonText}>Upload Photo</Text>
               </TouchableOpacity>
               <TextInput style={styles.inputfieldmultiline} placeholder="Add Text" value={text} multiline onChangeText={setText} />
               <View style={styles.durationContainer}>
-                  <TextInput style={styles.inputfield} placeholder="Years" keyboardType="numeric" onChangeText={(value) => updateDuration('years', value)} />
-                  <TextInput style={styles.inputfield} placeholder="Months" keyboardType="numeric" onChangeText={(value) => updateDuration('months', value)} />
-                  <TextInput style={styles.inputfield} placeholder="Days" keyboardType="numeric" onChangeText={(value) => updateDuration('days', value)} />
+                  <TextInput style={styles.timecapsuleinputfield} placeholder="Years" keyboardType="numeric" onChangeText={(value) => updateDuration('years', value)} />
+                  <TextInput style={styles.timecapsuleinputfield} placeholder="Months" keyboardType="numeric" onChangeText={(value) => updateDuration('months', value)} />
+                  <TextInput style={styles.timecapsuleinputfield} placeholder="Days" keyboardType="numeric" onChangeText={(value) => updateDuration('days', value)} />
               </View>
               <TouchableOpacity style={styles.button} onPress={handleCreate}>
                   <Text style={styles.buttonText}>Create Time Capsule</Text>

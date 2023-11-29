@@ -8,6 +8,18 @@ const styles = StyleSheet.create({
     },
     inputfield: {
         backgroundColor: "#cccccc",
+        width: "87%", // Adjusted to fit within the screen
+        height: 50, // Reduced height
+        color: "white",
+        paddingHorizontal: 15,
+        borderRadius: 15, // Reduced border radius
+        marginTop: 5,
+        marginBottom: 10,
+        fontWeight: "700",
+        paddingLeft: 30,
+    },
+    timecapsuleinputfield: {
+        backgroundColor: "#cccccc",
         width: "100%", // Adjusted to fit within the screen
         height: 50, // Reduced height
         color: "white",

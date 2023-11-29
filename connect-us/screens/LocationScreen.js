@@ -386,6 +386,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff', // White background for the permission screen
     },
     permissionMessage: {
+        width: "87%",
         marginBottom: 20,
         fontSize: 18,
         textAlign: 'center',
