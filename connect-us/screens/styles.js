@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start', // Align items to the start
         padding: 10,
         marginVertical: 5,
-        backgroundColor: '#f0f0f0', // Optional: background color for each item
+        backgroundColor: '#D4D5D3',
         borderRadius: 10,
         fontFamily: "balsamiq-sans"
     },
