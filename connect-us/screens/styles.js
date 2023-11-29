@@ -148,6 +148,24 @@ const styles = StyleSheet.create({
       flexGrow: 1,
       justifyContent: 'center',
     },
+    titleHeader: {
+        fontSize: 28,
+        fontFamily: "balsamiq-sans",
+        color: '#000',
+        paddingVertical: 0,
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+
+        width: '100%',
+        borderBottomWidth: 2,
+        borderBottomColor: '#e0e0e0',
+        marginBottom: 20,
+    },
+    heading: {
+        fontSize: 28,
+        fontFamily: "balsamiq-sans",
+    },
     itemContainer: {
         flex: 1,
         flexDirection: 'column', // Changed to column
@@ -157,7 +175,18 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         backgroundColor: '#D4D5D3',
         borderRadius: 10,
-        fontFamily: "balsamiq-sans"
+        fontFamily: "balsamiq-sans",
+        overflow: 'hidden',
+        position: 'relative',
+    },
+    imageStyles: {
+        opacity: 0.5,
+        width: '120%',
+        height: '150%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        resizeMode: 'cover', // This makes sure the image covers the entire container
     },
     itemTitle: {
         fontSize: 18,
@@ -187,6 +216,12 @@ const styles = StyleSheet.create({
         color: "#fff", // White text color
         fontWeight: "bold", // Bold text
         fontFamily: "balsamiq-sans"
+    },
+    yearHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding: 10,
+        // ... other styling for year headers ...
     },
     createContainer: {
         flexGrow: 1,

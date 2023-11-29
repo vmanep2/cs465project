@@ -40,7 +40,10 @@
     "react-native-maps": "1.7.1",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-safe-area-context": "4.6.3",
-    "react-native-ui-lib": "^7.9.1"
+    "react-native-ui-lib": "^7.9.1",
+    "react-native-web": "~0.19.6",
+    "react-dom": "18.2.0",
+    "@expo/webpack-config": "^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
