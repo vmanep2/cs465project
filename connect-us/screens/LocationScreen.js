@@ -8,11 +8,14 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import {Text} from "react-native-ui-lib";
+import {Image, TouchableOpacity} from "react-native";
+import axios from 'axios';
 
 const LocationDisplay = () => {
     const [location, setLocation] = useState(null);
     const [otherHalfLocation,setOtherHalfLocation] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [firstName,setFirstName] = useState(null);
     const [loading, setLoading] = useState(true); // Start with loading true
     const [permission, setPermission] = useState(false);
     const mapRef = React.useRef(null);
@@ -20,8 +23,40 @@ const LocationDisplay = () => {
     const [showEnableLocationButton, setShowEnableLocationButton] = useState(false);
     const [locationPermissionMessage, setLocationPermissionMessage] = useState('');
     const [partnerPermission, setPartnerPermission] = useState(null);
+    const [isDataFetched, setIsDataFetched] = useState(false);
 
     const otherHalfId = 'EmaQTMOMmmdCnRLQH7IJd9M6P1K2';
+
+    const disableMyLocation = async () => {
+        if (!userId) {
+            Alert.alert('No user', 'Please log in to disable location tracking.');
+            return;
+        }
+
+        const userLocationRef = doc(db, 'users', userId, 'locations', 'location');
+        try {
+            await setDoc(userLocationRef, {
+                locationPermission: false,
+                // You can also update latitude and longitude to null or some default values
+            });
+            setPermission(false);
+            Alert.alert('Location Disabled', 'Your location sharing is now disabled.');
+        } catch (error) {
+            console.error('Error disabling location:', error);
+            Alert.alert('Error', `Failed to disable location: ${error.message}`);
+        }
+    };
+
+    const fetchData = async (uid) => {
+        try {
+            await checkAndRequestPermissions(uid);
+            await fetchOtherHalfLocation();
+            setIsDataFetched(true);
+        } catch (error) {
+            console.error('Error in fetchData:', error);
+            // Handle error (e.g., set an error state, show alert, etc.)
+        }
+    };
 
     const fitAllMarkers = () => {
         if (mapRef.current && location && otherHalfLocation) {
@@ -38,6 +73,7 @@ const LocationDisplay = () => {
 
         if (systemPermissionStatus.status !== 'granted' || !dbPermissionStatus) {
             // Set the UI to show the enable location button and message
+            setPermission(true);
             setShowEnableLocationButton(true);
             setLocationPermissionMessage('Your location is not enabled. Enable it to share your location.');
             setLoading(false);
@@ -77,72 +113,57 @@ const LocationDisplay = () => {
     };
 
     const updateOtherHalfLocalTime = async (latitude, longitude) => {
-        // Assume we get the timezone offset using the coordinates (latitude, longitude)
-        // For simplicity, let's say we find out the timezone is 'America/New_York'
-        const timezone = 'America/New_York'; // This would be dynamic in a real app
+        const apiKey = 'FUCA9CNRLUNI'; // Replace with your actual API key
+        const url = `https://api.timezonedb.com/v2.1/get-time-zone?key=${apiKey}&format=json&by=position&lat=${latitude}&lng=${longitude}`;
 
-        // Convert UTC time to zoned time
-        const zonedTime = utcToZonedTime(new Date(), timezone);
-        // Format the zoned time
-        const formattedZonedTime = format(zonedTime, 'yyyy-MM-dd HH:mm:ssXXX', { timeZone: timezone });
-        setOtherHalfLocalTime(formattedZonedTime);
+        try {
+            const response = await axios.get(url);
+            const data = response.data;
+
+            if (data.status === 'OK') {
+                setOtherHalfLocalTime(data.formatted);
+            } else {
+                console.error('TimeZoneDB API error:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching timezone:', error);
+        }
     };
 
     useEffect(() => {
         const auth = getAuth();
-
-        // This function will be called to set up intervals and other stuff when the component mounts
-        const initialize = async (user) => {
-            setUserId(user.uid);
-            let { status } = await Location.getForegroundPermissionsAsync();
-            if (status === 'granted') {
-                await checkLocationPermission(user.uid);
-                await fetchOtherHalfLocation();
-                return true;
-            } else {
-                setPermission(false);
-                setLoading(false);
-                return false;
-            }
-        };
-        const fetchInterval = setInterval(() => {
-            fetchOtherHalfLocation().catch(console.error);
-        }, 10000);
-
-        // This function will be called to clear intervals when the component unmounts
-        const cleanUp = (locationInterval, locationUpdateInterval) => {
-            clearInterval(locationInterval);
-            clearInterval(locationUpdateInterval);
-        };
-
-        // This will hold our intervals
-        let locationInterval;
-        let locationUpdateInterval;
-
-        // Subscribe to auth state changes
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                await checkAndRequestPermissions(user.uid);
-                const isGranted = await initialize(user);
-                if (isGranted) {
-                    locationInterval = setInterval(fetchOtherHalfLocation, 10000); // fetch every 10 seconds
-                    locationUpdateInterval = setInterval(() => {
-                        updateMyLocation(user.uid);
-                    }, 10000);
-                }
+                setUserId(user.uid);
+                setFirstName(user.displayName);
+                setLoading(true);  // Set loading to true at the start of data fetching
+                fetchData(user.uid);
             } else {
                 Alert.alert('No user', 'No user is signed in');
                 setLoading(false);
             }
         });
 
-        // This will be called when the component unmounts
         return () => {
-            unsubscribe(); // Unsubscribe from auth state changes
-            cleanUp(locationInterval, locationUpdateInterval); // Clear intervals
-            clearInterval(fetchInterval);
+            unsubscribe();
         };
-    }, []); // The effect should depend on nothing and behave like componentDidMount
+    }, []);
+
+    useEffect(() => {
+        let locationInterval, locationUpdateInterval;
+
+        if (isDataFetched) {
+            locationInterval = setInterval(() => fetchOtherHalfLocation(), 10000);
+            locationUpdateInterval = setInterval(() => updateMyLocation(userId), 10000);
+        }
+
+        return () => {
+            clearInterval(locationInterval);
+            clearInterval(locationUpdateInterval);
+        };
+    }, [isDataFetched, userId]);
+
+
 
     useEffect(() => {
         if (location && otherHalfLocation) {
@@ -152,6 +173,14 @@ const LocationDisplay = () => {
         }
     }, [location, otherHalfLocation]); // This effect depends on location and otherHalfLocation
 
+    useEffect(() => {
+        if (!permission) {
+            setPermission(true);
+            setShowEnableLocationButton(true);
+            setLocationPermissionMessage('Your location is not enabled. Enable it to share your location.');
+        }
+        // You might also want to handle what happens when permission is true
+    }, [permission]);
 
 
     const updateMyLocation = async (userId) => {
@@ -241,17 +270,26 @@ const LocationDisplay = () => {
         } finally {
             setLoading(false);
         }
+        setShowEnableLocationButton(false);
         await checkAndRequestPermissions(userId);
     };
 
+    if (!isDataFetched) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
-            {showEnableLocationButton ? (
+            {showEnableLocationButton || !permission ? (
                 <View style={styles.permissionScreen}>
                     <Text style={styles.permissionMessage}>
                         {locationPermissionMessage}
                     </Text>
-                    <Button title="Enable Location" onPress={enableMyLocation} />
+                    <Button color='#e91d63' title="Enable Location" onPress={enableMyLocation} />
                 </View>
             ) : partnerPermission ? (
                 // MapView and other components
@@ -261,9 +299,26 @@ const LocationDisplay = () => {
                         style={styles.map}
                         // other props
                     >
-                        <Marker coordinate={location} pinColor="blue" title="My Location" />
-                        <Marker coordinate={otherHalfLocation} pinColor="pink" title="Other Location" />
+                        <Marker coordinate={location} anchor={{ x: 0.5, y: 1 }} title="My Location">
+                            <View style={styles.customMarkerContainer}>
+                                <Image
+                                    source={{ uri: 'https://nico-nico-nii.com/pre-defined/user_profile_pic_1' }}
+                                    style={styles.profileImage}
+                                />
+                            </View>
+                        </Marker>
+                        <Marker coordinate={otherHalfLocation} anchor={{ x: 0.5, y: 1 }} title="Partner's Location">
+                            <View style={styles.customMarkerContainer}>
+                                <Image
+                                    source={{ uri: 'https://nico-nico-nii.com/pre-defined/user_profile_pic_2' }}
+                                    style={styles.profileImage}
+                                />
+                            </View>
+                        </Marker>
                     </MapView>
+                    <TouchableOpacity style={styles.disableLocationButton} onPress={disableMyLocation}>
+                        <Text style={styles.disableLocationButtonText}>Stop Sharing</Text>
+                    </TouchableOpacity>
                     <SafeAreaView style={styles.overlay}>
                         <View style={styles.partnerTimeContainer}>
                             <Text style={styles.partnerTimeText}>
@@ -295,17 +350,35 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject, // Make the map extend to the edges
     },
     overlay: {
+        marginTop: 20,
         justifyContent: 'space-between', // Space children out between top and bottom
         padding: 10, // Add padding if you want to avoid the notch slightly
+        alignItems: "center",
     },
     partnerTimeContainer: {
-        alignSelf: 'center', // Center the time container horizontally
-        padding: 10,
-        position: 'absolute',
-        top: Platform.select({ ios: 45, android: 10 }), // Adjust top for iOS notch
-        width: '100%',
-        alignItems: 'center',
+        position: "relative",
+        backgroundColor: "rgba(255, 250, 240, 0.9)",
+        padding: 10.5,
+        borderRadius: 10,
+        width: 290,
+        alignItems: "center",
+        marginTop: -30,
+        fontFamily: "balsamiq-sans",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
     },
+
+    partnerTimeText: {
+        fontSize: 14, // Increased font size
+        fontFamily: "balsamiq-sans",
+        // Add other text styles if needed
+    },
+
     permissionScreen: {
         flex: 1,
         justifyContent: 'center',
@@ -313,9 +386,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff', // White background for the permission screen
     },
     permissionMessage: {
+        width: "87%",
         marginBottom: 20,
         fontSize: 18,
         textAlign: 'center',
+        fontFamily: "balsamiq-sans",
         // Add any other styling you want for the message
     },
     partnerPermissionScreen: {
@@ -323,6 +398,37 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff', // White background for the partner permission screen
+    },
+    customMarkerContainer: {
+        alignItems: 'center',
+    },
+    profileImage: {
+        width: 40, // Adjust size as needed
+        height: 40, // Adjust size as needed
+        borderRadius: 20, // Half of width and height for circle shape
+        borderWidth: 2,
+        borderColor: 'white',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    disableLocationButton: {
+        position: 'absolute', // Position absolutely within parent
+        bottom: 100, // Adjust for top-right or use 'bottom' for bottom-right
+        right: 10, // Adjust as needed for right alignment
+        backgroundColor: '#e91d63',
+        padding: 13,
+        borderRadius: 5,
+        zIndex: 1, // Ensure it's above the map
+    },
+    disableLocationButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        fontFamily: "balsamiq-sans",
     },
 });
 
