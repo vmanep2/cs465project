@@ -144,6 +144,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
     },
+    profileDurationContainer: {
+        flexDirection: 'row', // Stack inputs vertically
+        justifyContent: 'space-between',
+        width: '67%', // Full width
+        alignItems: 'center',
+        marginBottom: 10,
+    },
     durationInput: {
       width: '22%', 
     },
