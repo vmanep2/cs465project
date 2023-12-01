@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {Calendar} from 'react-native-calendars';
-import { View, StyleSheet, Text, Button } from "react-native";
+import { View, StyleSheet, Text, Button, Dimensions } from "react-native";
 import { collection, getDocs, query } from "firebase/firestore";
 
 import { db, storage } from '../../firebaseConfig';
@@ -9,6 +9,8 @@ export default function CalendarView({route, navigation}) {
     const [userId, setUserId] = useState();
     const [selected, setSelected] = useState('');
     const [memDates, setMemDates] = useState([]);
+
+    const { width } = Dimensions.get('window');
 
     const handleViewMemoryPress = () => {
         navigation.navigate("ViewMemory", { uid: userId.uid, targetDate: selected });
@@ -66,7 +68,16 @@ export default function CalendarView({route, navigation}) {
             <View style={styles.rowcontainer}>
                 <Text style={styles.heading}>Calendar</Text>
             </View>
-
+            <View
+                style={{
+                    height: 2,
+                    position: 'absolute',
+                    top: 70,
+                    width: width - 30,
+                    backgroundColor: '#e0e0e0', // You can customize the color as per your requirement
+                    alignSelf: 'center',
+                }}
+            />
             <View style={styles.calendarcontainer}>
                 <Text style={{marginBottom: 20, fontFamily: 'balsamiq-sans'}}>
                     Select a date to view memory

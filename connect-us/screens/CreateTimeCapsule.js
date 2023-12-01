@@ -52,6 +52,10 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
     openingDate.setMonth(openingDate.getMonth() + parseInt(months));
     openingDate.setDate(openingDate.getDate() + parseInt(days));
 
+    if (images == null) {
+        Alert.alert('Error!', 'You have not added any images');
+        return;
+    }
 
     try {
         const creationDate = new Date();
@@ -60,7 +64,7 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
         openingDate.setMonth(openingDate.getMonth() + duration.months);
         openingDate.setDate(openingDate.getDate() + duration.days);
 
-        let uriList = [];
+        let photos = [];
 
         // File upload logic
         for (let i = 0; i < images.length; i++) {
@@ -82,13 +86,13 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
                 console.log("Uploaded file to Firebase storage!");
             });
 
-            uriList.push(userDirectory + filename);
+            photos.push(userDirectory + filename);
 
             const docRef = await addDoc(collection(db, 'timeCapsules'), {
                 user,
                 title,
                 text,
-                uriList,
+                photos,
                 creationDate: creationDate.toISOString(),
                 openingDate: openingDate.toISOString(),
             });
