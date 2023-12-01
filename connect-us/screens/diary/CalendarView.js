@@ -26,7 +26,7 @@ export default function CalendarView({route, navigation}) {
         querySnapshot.forEach(async (doc) => {
             let data = doc.data();
             let memoryDate = new Date(data["date"]["seconds"] * 1000);
-            memoryDate = memoryDate.toISOString().slice(0, 10);
+            memoryDate = new Intl.DateTimeFormat("fr-CA", {year: "numeric", month: "2-digit", day: "2-digit"}).format(memoryDate);
             dates.push(memoryDate);
         });
 
