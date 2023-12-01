@@ -30,6 +30,18 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         paddingLeft: 30,
     },
+    timecapsuledatefield: {
+        backgroundColor: "#cccccc",
+        width: "30%", // Adjusted width to fit all three inputs within the screen
+        height: 50, // Reduced height
+        color: "white",
+        paddingHorizontal: 15,
+        borderRadius: 15, // Reduced border radius
+        marginTop: 5,
+        marginBottom: 10,
+        fontWeight: "700",
+        paddingLeft: 20,
+    },
     inputfieldmultiline: {
         backgroundColor: "#cccccc",
         width: "100%", // Adjusted to fit within the screen
@@ -94,7 +106,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'stretch', 
-      padding: 10,
+      padding: 15,
     },
     footerButtonContainer: {
       position: 'absolute',
@@ -133,12 +145,11 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     buttonText: {
-        fontFamily:"balsamiq-sans",
+        fontFamily:"balsamiq-sans-bold",
         color: 'white',
-        fontWeight: 'bold',
     },
     durationContainer: {
-        flexDirection: 'column', // Stack inputs vertically
+        flexDirection: 'row', // Stack inputs vertically
         justifyContent: 'space-between',
         width: '100%', // Full width
         alignItems: 'center',
@@ -169,7 +180,7 @@ const styles = StyleSheet.create({
     },
     titleHeader: {
         fontSize: 28,
-        fontFamily: "balsamiq-sans",
+        fontFamily: "balsamiq-sans-bold",
         color: '#000',
         paddingVertical: 20,
         paddingHorizontal: 20,
@@ -183,7 +194,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 28,
-        fontFamily: "balsamiq-sans",
+        fontFamily: "balsamiq-sans-bold",
     },
     itemContainer: {
         flex: 1,
@@ -261,8 +272,7 @@ const styles = StyleSheet.create({
     inlineButtonText: {
         fontSize: 16, // Adjust as needed
         color: "#fff", // White text color
-        fontWeight: "bold", // Bold text
-        fontFamily: "balsamiq-sans"
+        fontFamily: "balsamiq-sans-bold"
     },
     yearHeader: {
         fontSize: 20,
