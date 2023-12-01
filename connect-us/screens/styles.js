@@ -305,6 +305,61 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       padding: 20,
     },
+    blurbContainer: {
+      backgroundColor: '#f2f2f2', 
+      borderRadius: 10,
+      padding: 15,
+      marginHorizontal: 20,
+      marginVertical: 0,
+      shadowColor: '#000', 
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 5, 
+    },
+    durationExplanation: {
+      fontSize: 15,
+      fontWeight: 'bold',
+      color: '#333333', 
+      textAlign: 'center',
+      fontFamily: "balsamiq-sans-bold"
+    },
+    pickerSection: {
+      position: "fixed",
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      padding: 11,
+    },
+    pickerGroup: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 18,
+      justifyContent: 'space-between'
+    },
+    pickerLabelMonths: {
+      fontSize: 11,
+      marginBottom: -65,
+      marginLeft: -6,
+      fontFamily: "balsamiq-sans-bold"
+    },
+    pickerLabelYears: {
+      fontSize: 11,
+      marginBottom: -65,
+      marginLeft: 4,
+      fontFamily: "balsamiq-sans-bold"
+    },
+    pickerLabelDays: {
+      fontSize: 11,
+      marginBottom: -65,
+      marginLeft: 6,
+      fontFamily: "balsamiq-sans-bold"
+    },
+    picker: {
+      width: 85,
+      height: 150, 
+      marginLeft: -50
+    },
   });
   
   export default styles;

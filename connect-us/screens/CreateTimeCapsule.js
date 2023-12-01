@@ -4,14 +4,19 @@ import { db, storage } from '../firebaseConfig';
 import { ref, uploadBytes } from "firebase/storage";
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from "expo-image-picker";
 import styles from './styles';
 
 const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
-  const [duration, setDuration] = useState({ years: 0, months: 0, days: 0 });
+  // const [duration, setDuration] = useState({ years: 0, months: 0, days: 0 });
   const [images, setImages] = useState(null);
+
+  const [years, setYears] = useState("0");
+  const [months, setMonths] = useState("0");
+  const [days, setDays] = useState("0");
   
   const { width } = Dimensions.get('window');
 
@@ -42,6 +47,11 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
       Alert.alert('Error!', 'You have not added any text');
       return;
     }
+
+    openingDate.setFullYear(openingDate.getFullYear() + parseInt(years));
+    openingDate.setMonth(openingDate.getMonth() + parseInt(months));
+    openingDate.setDate(openingDate.getDate() + parseInt(days));
+
 
     try {
         const creationDate = new Date();
@@ -94,6 +104,14 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
     }
   };
 
+  const generatePickerItems = (number) => {
+    let items = [];
+    for (let i = 0; i <= number; i++) {
+      items.push(<Picker.Item label={`${i}`} value={`${i}`} key={i} />);
+    }
+    return items;
+  };
+
   return (
       <SafeAreaView style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.createContainer}>
@@ -129,11 +147,44 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
                 )}
               </View>
               <TextInput style={styles.inputfieldmultiline} placeholder="Add Text" value={text} multiline onChangeText={setText} />
-              <View style={styles.durationContainer}>
-                  <TextInput style={styles.timecapsuledatefield} placeholder="Years" keyboardType="numeric" onChangeText={(value) => updateDuration('years', value)} />
-                  <TextInput style={styles.timecapsuledatefield} placeholder="Months" keyboardType="numeric" onChangeText={(value) => updateDuration('months', value)} />
-                  <TextInput style={styles.timecapsuledatefield} placeholder="Days" keyboardType="numeric" onChangeText={(value) => updateDuration('days', value)} />
+              <View style={styles.blurbContainer}>
+                <Text style={styles.durationExplanation}>
+                Choose the duration for how long the time capsule will be locked! 🗝️
+                </Text>
               </View>
+
+              <View style={styles.pickerSection}>
+                <View style={styles.pickerGroup}>
+                  <Text style={styles.pickerLabelYears}>Years:</Text>
+                  <Picker
+                    selectedValue={years}
+                    onValueChange={(itemValue) => setYears(itemValue)}
+                    style={styles.picker}>
+                    {generatePickerItems(10)}
+                  </Picker>
+                </View>
+
+                <View style={styles.pickerGroup}>
+                  <Text style={styles.pickerLabelMonths}>Months:</Text>
+                  <Picker
+                    selectedValue={months}
+                    onValueChange={(itemValue) => setMonths(itemValue)}
+                    style={styles.picker}>
+                    {generatePickerItems(12)}
+                  </Picker>
+                </View>
+
+                <View style={styles.pickerGroup}>
+                  <Text style={styles.pickerLabelDays}>Days:</Text>
+                  <Picker
+                    selectedValue={days}
+                    onValueChange={(itemValue) => setDays(itemValue)}
+                    style={styles.picker}>
+                    {generatePickerItems(31)}
+                  </Picker>
+                </View>
+              </View>
+
               <TouchableOpacity style={styles.button} onPress={handleCreate}>
                   <Text style={styles.buttonText}>Create Time Capsule</Text>
               </TouchableOpacity>
