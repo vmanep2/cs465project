@@ -48,6 +48,11 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
       return;
     }
 
+    if (years == "0" && months == "0" && days == "0") {
+      Alert.alert('Error!', 'Please set a valid duration');
+      return;
+    }
+
     // openingDate.setFullYear(openingDate.getFullYear() + parseInt(years));
     // openingDate.setMonth(openingDate.getMonth() + parseInt(months));
     // openingDate.setDate(openingDate.getDate() + parseInt(days));
