@@ -235,9 +235,9 @@ const styles = StyleSheet.create({
     },
     inlineButton: {
         backgroundColor: "#e91d63",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 20,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 5,
@@ -252,10 +252,9 @@ const styles = StyleSheet.create({
       marginVertical: 5,
     },
     inlineCloseButtonText: {
-      fontSize: 13, 
+      fontSize: 16, 
       color: "#fff", 
-      fontWeight: "bold", 
-      fontFamily: "balsamiq-sans"
+      fontFamily: "balsamiq-sans-bold"
     },
     trashIcon: {
       position: 'absolute',
@@ -305,6 +304,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       padding: 20,
     },
+    divider: {
+        
+    }
   });
   
   export default styles;

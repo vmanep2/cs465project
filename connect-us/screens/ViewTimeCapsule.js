@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, FlatList, Image, Button, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground, Alert} from 'react-native';
 import { collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { db, storage } from '../firebaseConfig';
 import { Ionicons } from 'react-native-vector-icons';
 import styles from './styles';
 
@@ -11,6 +12,11 @@ const ViewTimeCapsule = ({ user }) => {
   const [timeCapsules, setTimeCapsules] = useState({});
   const [openedCapsules, setOpenedCapsules] = useState({}); 
 
+  const fetchImages = async (uri) => {
+    const imageURI = await getDownloadURL(ref(storage, uri))
+    return imageURI;
+  }
+
   useEffect(() => {
     if (!user) {
       console.error('No user provided');
@@ -18,11 +24,23 @@ const ViewTimeCapsule = ({ user }) => {
     }
 
     const q = query(collection(db, 'timeCapsules'), where('user', '==', user));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const capsules = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
+
+      // Store capsule URI from firebase into uriList property of object
+      for (let i = 0; i < capsules.length; i++) {
+        let downloadImageUriList = [];
+
+        for (let j = 0; j < capsules[i].photos.length; j++) {
+            const imageURI = await fetchImages(capsules[i].photos[j]);
+            downloadImageUriList.push(imageURI);
+        }
+        capsules[i].uriList = downloadImageUriList;
+      }
+
         // First sort the capsules
         const sortedCapsules = capsules.sort((a, b) => new Date(a.openingDate) - new Date(b.openingDate));
 
@@ -109,9 +127,17 @@ const ViewTimeCapsule = ({ user }) => {
                   {isOpened ? (
                     <>
                       <Text style={styles.itemText}>Text: {capsule.text}</Text>
-                      {capsule.photos && capsule.photos.map((photo, photoIndex) => (
-                        <Image key={photoIndex} source={{ uri: photo }} style={styles.imageStyle} />
-                      ))}
+                      <FlatList
+                            horizontal
+                            data={capsule.uriList}
+                            renderItem={({ item }) => (
+                            <Image
+                                source={{ uri: item }}
+                                style={{ width: 150, height: 150, margin: 10 }}
+                            />
+                            )}
+                            keyExtractor={(_, index) => index.toString()}
+                        />
                       <TouchableOpacity
                         style={styles.inlineCloseButton}
                         onPress={() => handleToggleCapsule(capsule.id)}
