@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, TouchableOpacity, View, StyleSheet, Text, ScrollView } from "react-native";
-import { collection, getDocs, query } from "firebase/firestore";
+import { Alert, TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,6 +19,7 @@ export default function ViewMemory({ route, navigation }) {
     const [memoryCount, setMemoryCount] = useState(0);
     const [uriList, setUriList] = useState([]);
     const [memoryTitle, setMemoryTitle] = useState("");
+    const [memoryId, setMemoryId] = useState("");
     const [date, setDate] = useState("");
     const [userData, setUserData] = useState(null);
 
@@ -28,6 +29,33 @@ export default function ViewMemory({ route, navigation }) {
 
     const handleCalendarView = () => {
         navigation.navigate("CalendarView");
+    }
+
+    const handleDelete = () => {
+        Alert.alert(
+            'Delete Memory',
+            'Are you sure you want to delete this memory?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Delete',
+                onPress: async () => {
+                  // Handle deletion logic here
+                  const docRef = doc(db, 'users', userData.uid, 'memories', memoryId);
+                  await deleteDoc(docRef);
+
+                  console.log('Memory deleted!');
+
+                  navigation.navigate("ViewMemory");
+                },
+                style: 'destructive',
+              },
+            ],
+            { cancelable: true }
+        );
     }
 
     const fetchMemories = async () => {
@@ -68,6 +96,7 @@ export default function ViewMemory({ route, navigation }) {
                 setDate(dateString);
                 setMemoryTitle(data["caption"]);
                 setUriList(downloadImageUriList);
+                setMemoryId(doc.id);
 
                 // console.log(downloadImageUriList)
            
@@ -113,8 +142,11 @@ export default function ViewMemory({ route, navigation }) {
         <View style={styles.frame}>
             <View style={styles.rowcontainer}>
                 <Text style={styles.heading}>Diary</Text>
-                <TouchableOpacity onPress={handleCalendarView}>
+                <TouchableOpacity onPress={handleCalendarView} style={{marginRight: 10}}>
                     <Ionicons name="calendar-outline" size={30} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDelete}>
+                    <Ionicons name="trash" size={30} color="#D73E02" />
                 </TouchableOpacity>
             </View>
             
@@ -138,8 +170,9 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 30,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
+        borderBottomWidth: 2,
+        borderBottomColor: '#e0e0e0',
         // backgroundColor: '#324'
     },
     empty_container: {
@@ -155,6 +188,7 @@ const styles = StyleSheet.create({
     heading: {
       fontSize: 28,
       fontFamily: "balsamiq-sans",
+      flex: 1
     },
     heading2: {
       textAlignVertical: "center",
