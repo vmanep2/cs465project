@@ -20,6 +20,8 @@ import {
   englishDataset,
   englishRecommendedTransformers,
 } from "obscenity";
+import { db } from "../firebaseConfig";
+import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 
 const RegisterScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
@@ -53,6 +55,33 @@ const RegisterScreen = ({ navigation, route }) => {
       return;
     }
 
+    const registerFirstPartner = async () => {
+      try {
+        await addDoc(collection(db, "couples"), {
+          partner1 : username,
+          partner2: null
+      })
+      console.log("Added partner to collection")
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const registerSecondPartner = async () => {
+      const couplesRef = collection(db, "couples")
+      const q = query(couplesRef, where("partner1", "==", partnerUserName));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const couplesDoc = querySnapshot.docs[0];
+        await updateDoc(doc(db, "couples", couplesDoc.id), {
+          partner2: username
+        })
+      } else {
+        console.log("Partner username not found")
+      }
+    }
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
@@ -68,10 +97,15 @@ const RegisterScreen = ({ navigation, route }) => {
           handleCodeInApp: true,
           url: "https://connectus-fb453.firebaseapp.com",
         })
-          .then(() => {
+          .then(async () => {
             alert(
               "Verification email sent. Please log in after verifying your email."
             );
+            if (partnerUserName === "") {
+              await registerFirstPartner()
+            } else {
+              await registerSecondPartner()
+            }
           })
           .catch((error) => {
             alert("An error occured. Please try again.");
