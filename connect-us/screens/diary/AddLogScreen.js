@@ -156,7 +156,7 @@ export default function AddLogScreen({ route, navigation }) {
       <View style={{flex: 1, 
             // justifyContent: "center",
             marginBottom: 50}}>
-        <Text style={{ fontSize: 28, fontFamily: 'balsamiq-sans'}}>
+        <Text style={{ fontSize: 28, fontFamily: 'balsamiq-sans', borderBottomWidth: 2, borderBottomColor: '#e0e0e0', paddingBottom: 15}}>
             Add Log
         </Text>
         <Text style={{ fontSize: 14, marginTop: 30, marginBottom: 10, fontFamily: 'balsamiq-sans'}}>
