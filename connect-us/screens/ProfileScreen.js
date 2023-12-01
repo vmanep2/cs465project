@@ -28,6 +28,7 @@ const pickImage = async () => {
  const navigateToRegisterScreen = () => {
    navigation.navigate('Register', {
      firstName: firstName,
+     profilePicture: image
    });
  };
 
