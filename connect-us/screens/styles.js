@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontFamily: "balsamiq-sans",
         color: '#000',
-        paddingVertical: 0,
+        paddingVertical: 20,
         paddingHorizontal: 20,
         flexDirection: "row",
         justifyContent: "space-between",
