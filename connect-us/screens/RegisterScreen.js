@@ -29,6 +29,7 @@ const RegisterScreen = ({ navigation, route }) => {
   const [username, setUserName] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [partnerUserName, setPartnerUserName] = useState("");
+  const [userUID, setUserUID] = useState();
 
   const { firstName } = route.params;
 
@@ -55,11 +56,13 @@ const RegisterScreen = ({ navigation, route }) => {
       return;
     }
 
-    const registerFirstPartner = async () => {
+    const registerFirstPartner = async (uid) => {
       try {
         await addDoc(collection(db, "couples"), {
           partner1 : username,
-          partner2: null
+          partner1ID: uid,
+          partner2: null,
+          partner2UID: null
       })
       console.log("Added partner to collection")
       } catch (error) {
@@ -67,7 +70,7 @@ const RegisterScreen = ({ navigation, route }) => {
       }
     }
 
-    const registerSecondPartner = async () => {
+    const registerSecondPartner = async (uid) => {
       const couplesRef = collection(db, "couples")
       const q = query(couplesRef, where("partner1", "==", partnerUserName));
       const querySnapshot = await getDocs(q);
@@ -75,7 +78,8 @@ const RegisterScreen = ({ navigation, route }) => {
       if (!querySnapshot.empty) {
         const couplesDoc = querySnapshot.docs[0];
         await updateDoc(doc(db, "couples", couplesDoc.id), {
-          partner2: username
+          partner2: username,
+          partner2UID: uid
         })
       } else {
         console.log("Partner username not found")
@@ -88,11 +92,19 @@ const RegisterScreen = ({ navigation, route }) => {
         console.log("Registered with:", user.email);
         user.displayName = firstName + " " + partnerUserName
         console.log("Display name: ", user.displayName);
+        console.log(user.uid)
+        setUserUID(user.uid)
+        return user.uid
       })
       .catch((error) => {
         alert("An error occured. Please try again.")
         console.log(error.message)})
-      .then(() => {
+      .then(async (uid) => {
+        if (partnerUserName === "") {
+          await registerFirstPartner(uid)
+        } else {
+          await registerSecondPartner(uid)
+        }
         sendEmailVerification(auth.currentUser, {
           handleCodeInApp: true,
           url: "https://connectus-fb453.firebaseapp.com",
@@ -101,11 +113,6 @@ const RegisterScreen = ({ navigation, route }) => {
             alert(
               "Verification email sent. Please log in after verifying your email."
             );
-            if (partnerUserName === "") {
-              await registerFirstPartner()
-            } else {
-              await registerSecondPartner()
-            }
           })
           .catch((error) => {
             alert("An error occured. Please try again.");
@@ -114,6 +121,7 @@ const RegisterScreen = ({ navigation, route }) => {
           })
           .then(navigateSignIn());
       });
+    
   };
 
   const navigateSignIn = () => {
