@@ -124,6 +124,8 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
                 style={{
                 alignItems: "center",
                 justifyContent: "center",
+                marginTop: 10,
+                marginBottom: 20,
                 }}>
                 {images ? (
                 <FlatList
