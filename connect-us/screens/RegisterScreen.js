@@ -60,11 +60,27 @@ const RegisterScreen = ({ navigation, route }) => {
 
     const registerFirstPartner = async (uid) => {
       try {
+        const response = await fetch(profilePicture[0].uri)
+        const blob = await response.blob()
+        const filename = profilePicture[0].uri.split('/')[profilePicture[0].uri.split('/').length - 1]
+        // Create directory string for location in firebase storage
+        const userDirectory = "users/" + uid;
+        // Create reference for firebase to know where to upload the file/image
+        const picRef = ref(storage, userDirectory + filename);
+        // Use reference to upload
+        await uploadBytes(picRef, blob).then((snapshot) => {
+          console.log("Uploaded file to Firebase storage!");
+        });
+        
+        const partner1profilePicture = userDirectory + filename
+        console.log(partner1profilePicture)
         await addDoc(collection(db, "couples"), {
           partner1 : username,
           partner1ID: uid,
+          partner1profilePicture: partner1profilePicture,
           partner2: null,
-          partner2UID: null
+          partner2UID: null,
+          partner2profilePicture: null
       })
       console.log("Added partner to collection")
       } catch (error) {
@@ -73,6 +89,21 @@ const RegisterScreen = ({ navigation, route }) => {
     }
 
     const registerSecondPartner = async (uid) => {
+      const response = await fetch(profilePicture[0].uri)
+      const blob = await response.blob()
+      const filename = profilePicture[0].uri.split('/')[profilePicture[0].uri.split('/').length - 1]
+      // Create directory string for location in firebase storage
+      const userDirectory = "users/" + uid;
+      // Create reference for firebase to know where to upload the file/image
+      const picRef = ref(storage, userDirectory + filename);
+      // Use reference to upload
+      await uploadBytes(picRef, blob).then((snapshot) => {
+        console.log("Uploaded file to Firebase storage!");
+      });
+      
+      const profilePicture = userDirectory + filename
+      console.log(profilePicture)
+
       const couplesRef = collection(db, "couples")
       const q = query(couplesRef, where("partner1", "==", partnerUserName));
       const querySnapshot = await getDocs(q);
@@ -81,7 +112,8 @@ const RegisterScreen = ({ navigation, route }) => {
         const couplesDoc = querySnapshot.docs[0];
         await updateDoc(doc(db, "couples", couplesDoc.id), {
           partner2: username,
-          partner2UID: uid
+          partner2UID: uid,
+          partner2profilePicture: profilePicture,
         })
       } else {
         console.log("Partner username not found")
