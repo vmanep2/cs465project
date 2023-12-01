@@ -128,7 +128,8 @@ const ViewTimeCapsule = ({ user }) => {
                         <Text style={styles.inlineButtonText}>Open</Text>
                       </TouchableOpacity>
                     ) : (
-                      <Image source={lockIcon} style={styles.lockIconStyle} />
+                      // <Image source={lockIcon} style={styles.lockIconStyle} />
+                      <Ionicons name="lock-closed" size={50} style={styles.lockIconStyle} />
                     )
                   )}
 

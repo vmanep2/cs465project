@@ -44,6 +44,15 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
   };
 
   const handleCreate = async () => {
+    if (title == "") {
+      Alert.alert('Error!', 'You have not added a title');
+      return;
+    }
+
+    if (text == "") {
+      Alert.alert('Error!', 'You have not added any text');
+      return;
+    }
     const creationDate = new Date();
     const openingDate = new Date(creationDate);
     openingDate.setFullYear(openingDate.getFullYear() + duration.years);
