@@ -4,6 +4,8 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import styles from './styles';
 
+const lockIcon = require('../assets/lock_icon.jpg');
+
 const ViewTimeCapsule = ({ user }) => {
   const [timeCapsules, setTimeCapsules] = useState({});
   const [openedCapsules, setOpenedCapsules] = useState({}); // Tracks which capsules are opened
@@ -46,55 +48,68 @@ const ViewTimeCapsule = ({ user }) => {
       [id]: true, 
     }));
   };
+  
+  const handleToggleCapsule = (id) => {
+    setOpenedCapsules(prevState => ({
+      ...prevState,
+      [id]: !prevState[id], // Toggle the open/close state
+    }));
+  };
 
 
-    return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView>
-                <Text style={styles.titleHeader}>Time Capsule</Text>
-            {Object.keys(timeCapsules).sort((a, b) => b - a).map(year => (
-                <View key={year}>
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+        <Text style={styles.titleHeader}>Time Capsule</Text>
+        {Object.keys(timeCapsules).sort((a, b) => b - a).map(year => (
+          <View key={year}>
+            <Text style={styles.yearHeader}>{year}</Text>
+            {timeCapsules[year].map(capsule => {
+              const now = new Date();
+              const openingDate = new Date(capsule.openingDate);
+              const isPastOpeningDate = now >= openingDate;
+              const isOpened = openedCapsules[capsule.id];
 
-                    <Text style={styles.yearHeader}>{year}</Text>
-                    {timeCapsules[year].map((capsule) => {
-                        const now = new Date();
-                        const openingDate = new Date(capsule.openingDate);
-                        const isPastOpeningDate = now >= openingDate;
-                        const isOpened = openedCapsules[capsule.id];
-                        return (
-                            <View style={styles.itemContainer}>
-                                <Image
-                                source={ require('../assets/9555a0b521676af5806153cc19267ab5.jpg') }
-                                style={styles.imageStyles}
-                                />
+              return (
+                <View style={styles.itemContainer}>
+                  <Image source={require('../assets/9555a0b521676af5806153cc19267ab5.jpg')} style={styles.imageStyles} />
+                  <Text style={styles.itemTitle}>Title: {capsule.title}</Text>
 
-                                <Text style={styles.itemTitle}>Title: {capsule.title}</Text>
-                                {isOpened ? (
-                                    <>
-                                        <Text style={styles.itemText}>Text: {capsule.text}</Text>
-                                        {capsule.photos && capsule.photos.map((photo, photoIndex) => (
-                                            <Image key={photoIndex} source={{ uri: photo }} style={styles.imageStyle} />
-                                        ))}
-                                    </>
-                                ) : (
-                                    isPastOpeningDate && (
-                                        <TouchableOpacity
-                                            style={styles.inlineButton}
-                                            onPress={() => handleOpenCapsule(capsule.id)}
-                                        >
-                                            <Text style={styles.inlineButtonText}>Open</Text>
-                                        </TouchableOpacity>
-                                    )
-                                )}
-                                <Text style={styles.itemText}>Opening Date: {openingDate.toLocaleDateString()}</Text>
-                            </View>
-                        );
-                    })}
+                  {isOpened ? (
+                    <>
+                      <Text style={styles.itemText}>Text: {capsule.text}</Text>
+                      {capsule.photos && capsule.photos.map((photo, photoIndex) => (
+                        <Image key={photoIndex} source={{ uri: photo }} style={styles.imageStyle} />
+                      ))}
+                      <TouchableOpacity
+                        style={styles.inlineCloseButton}
+                        onPress={() => handleToggleCapsule(capsule.id)}
+                      >
+                        <Text style={styles.inlineCloseButtonText}>Close</Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    isPastOpeningDate ? (
+                      <TouchableOpacity
+                        style={styles.inlineButton}
+                        onPress={() => handleToggleCapsule(capsule.id)}
+                      >
+                        <Text style={styles.inlineButtonText}>Open</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <Image source={lockIcon} style={styles.lockIconStyle} />
+                    )
+                  )}
+
+                  <Text style={styles.itemText}>Opening Date: {openingDate.toLocaleDateString()}</Text>
                 </View>
-            ))}
-            </ScrollView>
-        </SafeAreaView>
-    );
+              );
+            })}
+          </View>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
+  );
 
 };
 

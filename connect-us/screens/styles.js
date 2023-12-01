@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
         fontFamily: "balsamiq-sans"
     },
     itemText: {
+        fontSize: 22,
         fontFamily: "balsamiq-sans"
     },
     imageStyle: {
@@ -222,6 +223,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 5,
+    },
+    inlineCloseButton: {
+      backgroundColor: "#e91d63",
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 5,
+    },
+    inlineCloseButtonText: {
+      fontSize: 13, 
+      color: "#fff", 
+      fontWeight: "bold", 
+      fontFamily: "balsamiq-sans"
+    },
+  
+    lockIconStyle: {
+      width: 50, 
+      height: 50,
+      resizeMode: 'contain',
+      backgroundColor: 'transparent'
     },
     inlineButtonText: {
         fontSize: 16, // Adjust as needed
