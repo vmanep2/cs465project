@@ -12,7 +12,7 @@ const ViewTimeCapsule = ({ user }) => {
   const [timeCapsules, setTimeCapsules] = useState({});
   const [openedCapsules, setOpenedCapsules] = useState({}); 
   
-  const { width } = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
 
   const fetchImages = async (uri) => {
     const imageURI = await getDownloadURL(ref(storage, uri))
@@ -122,6 +122,11 @@ const ViewTimeCapsule = ({ user }) => {
                 alignSelf: 'center',
             }}
         />
+        {Object.keys(timeCapsules).length == 0 ? 
+            (<View style={{flex: 1, height: height - 200, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                <Text style={{ fontSize: 18, fontFamily: "balsamiq-sans" }}>No time capsules to open, create one!</Text>
+            </View>) : 
+            <></>}
         {Object.keys(timeCapsules).sort((a, b) => b - a).map(year => (
           <View key={year}>
             <Text style={styles.yearHeader}>{year}</Text>
