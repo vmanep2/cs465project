@@ -1,6 +1,6 @@
 import { isLoaded, useFonts } from "expo-font";
-import React from "react";
-import { useState, useEffect } from "react";
+// import React from "react";
+// import { useState, useEffect } from "react";
 
   
 
