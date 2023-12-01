@@ -8,13 +8,6 @@ import ImageCarousel from '../utils/ImageCarousel'
 import { db, storage } from '../../firebaseConfig';
 import FAB from '../utils/FAB'
 
-/**
- * TODOs:
- * #1: Add delete button for memory
- * #2: Figure out how to make ViewMemory dynamically linked to calendar
- * #6: Enhancement idea: figure out how to make the app actually work for the partner
- */
-
 export default function ViewMemory({ route, navigation }) {
     const [memoryCount, setMemoryCount] = useState(0);
     const [uriList, setUriList] = useState([]);
