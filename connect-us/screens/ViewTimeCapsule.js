@@ -32,7 +32,6 @@ const ViewTimeCapsule = ({ user }) => {
         ...doc.data(),
       }));
 
-      // Store capsule URI from firebase into uriList property of object
       for (let i = 0; i < capsules.length; i++) {
         let downloadImageUriList = [];
 
@@ -43,10 +42,8 @@ const ViewTimeCapsule = ({ user }) => {
         capsules[i].uriList = downloadImageUriList;
       }
 
-        // First sort the capsules
         const sortedCapsules = capsules.sort((a, b) => new Date(a.openingDate) - new Date(b.openingDate));
 
-        // Then group them by year
         const groupedByYear = sortedCapsules.reduce((acc, capsule) => {
             const year = new Date(capsule.openingDate).getFullYear();
             if (!acc[year]) {
@@ -118,7 +115,7 @@ const ViewTimeCapsule = ({ user }) => {
                 position: 'absolute',
                 top: 70,
                 width: width - 30,
-                backgroundColor: '#e0e0e0', // You can customize the color as per your requirement
+                backgroundColor: '#e0e0e0', 
                 alignSelf: 'center',
             }}
         />

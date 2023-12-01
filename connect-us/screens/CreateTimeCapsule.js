@@ -71,22 +71,18 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
 
         let photos = [];
 
-        // File upload logic
         for (let i = 0; i < images.length; i++) {
             const response = await fetch(images[i].uri)
             const blob = await response.blob()
 
-            // Parse the filename out of its directory
             const filename = images[i]["uri"].substring(
                 images[i]["uri"].lastIndexOf("/") + 1
             );
-            // Create directory string for location in firebase storage
+          
             const userDirectory = "users/" + user + "/timecapsule/";
 
-            // Create reference for firebase to know where to upload the file/image
             const picRef = ref(storage, userDirectory + filename);
 
-            // Use reference to upload
             await uploadBytes(picRef, blob).then((snapshot) => {
                 console.log("Uploaded file to Firebase storage!");
             });
@@ -102,7 +98,6 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
                 openingDate: openingDate.toISOString(),
             });
     
-            // Success handling
             Alert.alert('Success', 'Time Capsule created successfully!');
             onTimeCapsuleCreated(docRef.id); 
         }

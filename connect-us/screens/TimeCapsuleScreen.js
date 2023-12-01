@@ -63,16 +63,16 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 3,
-    height: 60, // Fixed height
-    width: 60, // Fixed width
-    borderRadius: 30, // Half of width/height to make it circular
+    height: 60, 
+    width: 60, 
+    borderRadius: 30, 
     position: "absolute",
-    bottom: '11%', // Adjust as needed
-    right: '5%', // Adjust as needed
+    bottom: '11%', 
+    right: '5%', 
     backgroundColor: "#e91d63",
   },
   iconStyle: {
-    fontSize: 32, // Adjust the icon size as needed
+    fontSize: 32, 
     color: "#fff",
   },
 });

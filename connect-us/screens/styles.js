@@ -8,11 +8,11 @@ const styles = StyleSheet.create({
     },
     inputfield: {
         backgroundColor: "#cccccc",
-        width: "87%", // Adjusted to fit within the screen
-        height: 50, // Reduced height
+        width: "87%", 
+        height: 50, 
         color: "white",
         paddingHorizontal: 15,
-        borderRadius: 15, // Reduced border radius
+        borderRadius: 15, 
         marginTop: 5,
         marginBottom: 10,
         fontWeight: "700",
@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     },
     timecapsuleinputfield: {
         backgroundColor: "#cccccc",
-        width: "100%", // Adjusted to fit within the screen
-        height: 50, // Reduced height
+        width: "100%", 
+        height: 50, 
         color: "white",
         paddingHorizontal: 15,
-        borderRadius: 15, // Reduced border radius
+        borderRadius: 15, 
         marginTop: 5,
         marginBottom: 10,
         fontWeight: "700",
@@ -32,11 +32,11 @@ const styles = StyleSheet.create({
     },
     timecapsuledatefield: {
         backgroundColor: "#cccccc",
-        width: "30%", // Adjusted width to fit all three inputs within the screen
-        height: 50, // Reduced height
+        width: "30%", 
+        height: 50, 
         color: "white",
         paddingHorizontal: 15,
-        borderRadius: 15, // Reduced border radius
+        borderRadius: 15, 
         marginTop: 5,
         marginBottom: 10,
         fontWeight: "700",
@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     },
     inputfieldmultiline: {
         backgroundColor: "#cccccc",
-        width: "100%", // Adjusted to fit within the screen
-        height: 100, // Reduced height
+        width: "100%", 
+        height: 100, 
         color: "white",
         paddingHorizontal: 15,
-        borderRadius: 15, // Reduced border radius
+        borderRadius: 15, 
         marginTop: 5,
         marginBottom: 10,
         fontWeight: "700",
@@ -149,16 +149,16 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     durationContainer: {
-        flexDirection: 'row', // Stack inputs vertically
+        flexDirection: 'row', 
         justifyContent: 'space-between',
-        width: '100%', // Full width
+        width: '100%', 
         alignItems: 'center',
         marginBottom: 10,
     },
     profileDurationContainer: {
-        flexDirection: 'row', // Stack inputs vertically
+        flexDirection: 'row', 
         justifyContent: 'space-between',
-        width: '67%', // Full width
+        width: '67%', 
         alignItems: 'center',
         marginBottom: 10,
     },
@@ -196,9 +196,9 @@ const styles = StyleSheet.create({
     },
     itemContainer: {
         flex: 1,
-        flexDirection: 'column', // Changed to column
-        justifyContent: 'flex-start', // Align items to the start
-        alignItems: 'flex-start', // Align items to the start
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        alignItems: 'flex-start', 
         padding: 10,
         marginVertical: 5,
         backgroundColor: '#D4D5D3',
@@ -214,11 +214,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        resizeMode: 'cover', // This makes sure the image covers the entire container
+        resizeMode: 'cover', 
     },
     itemTitle: {
         fontSize: 18,
-        fontWeight: 'bold', // Optional: make title bold
+        fontWeight: 'bold', 
         marginBottom: 5,
         fontFamily: "balsamiq-sans"
     },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     imageStyle: {
         width: 100,
         height: 100,
-        marginVertical: 5, // Space around the image
+        marginVertical: 5, 
     },
     inlineButton: {
         backgroundColor: "#e91d63",
@@ -267,15 +267,14 @@ const styles = StyleSheet.create({
       backgroundColor: 'transparent'
     },
     inlineButtonText: {
-        fontSize: 16, // Adjust as needed
-        color: "#fff", // White text color
+        fontSize: 16, 
+        color: "#fff", 
         fontFamily: "balsamiq-sans-bold"
     },
     yearHeader: {
         fontSize: 20,
         fontWeight: 'bold',
         padding: 10,
-        // ... other styling for year headers ...
     },
     createContainer: {
         flexGrow: 1,
