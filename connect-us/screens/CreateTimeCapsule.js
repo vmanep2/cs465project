@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Image, ScrollView, Text, Alert, TouchableOpacity, SafeAreaView, Dimensions, FlatList } from 'react-native';
 import { db, storage } from '../firebaseConfig'; 
-import { ref, uploadBytes } from "firebase/storage";
-import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, doc, setDoc} from 'firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from "expo-image-picker";
@@ -69,7 +69,7 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
         openingDate.setMonth(openingDate.getMonth() + parseInt(months, 10));
         openingDate.setDate(openingDate.getDate() + parseInt(days, 10));
 
-        let photos = [];
+        let photoURLs = [];
 
         for (let i = 0; i < images.length; i++) {
             const response = await fetch(images[i].uri)
@@ -83,24 +83,25 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
 
             const picRef = ref(storage, userDirectory + filename);
 
-            await uploadBytes(picRef, blob).then((snapshot) => {
-                console.log("Uploaded file to Firebase storage!");
-            });
+            const snapshot = await uploadBytes(picRef, blob);
+            const url = await getDownloadURL(snapshot.ref);  
+            photoURLs.push(url);
+        }
 
-            photos.push(userDirectory + filename);
+            // photos.push(userDirectory + filename);
 
             const docRef = await addDoc(collection(db, 'timeCapsules'), {
                 user,
                 title,
                 text,
-                photos,
+                photos: photoURLs,
                 creationDate: creationDate.toISOString(),
                 openingDate: openingDate.toISOString(),
             });
     
             Alert.alert('Success', 'Time Capsule created successfully!');
             onTimeCapsuleCreated(docRef.id); 
-        }
+        
 
     } catch (error) {
         console.error(error);
