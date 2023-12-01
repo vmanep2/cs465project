@@ -305,13 +305,13 @@ const styles = StyleSheet.create({
     blurbContainer: {
       backgroundColor: '#f2f2f2', 
       borderRadius: 10,
-      padding: 15,
+      padding: 5,
       marginHorizontal: 20,
       marginVertical: 0,
       shadowColor: '#000', 
       shadowOpacity: 0.2,
       shadowRadius: 3,
-      elevation: 5, 
+      elevation: 8, 
     },
     durationExplanation: {
       fontSize: 15,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
       alignItems: 'center',
       padding: 15,
-      marginTop: -30
+      marginTop: -35
     },
     pickerGroup: {
       flex: 1,
