@@ -48,9 +48,9 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
       return;
     }
 
-    openingDate.setFullYear(openingDate.getFullYear() + parseInt(years));
-    openingDate.setMonth(openingDate.getMonth() + parseInt(months));
-    openingDate.setDate(openingDate.getDate() + parseInt(days));
+    // openingDate.setFullYear(openingDate.getFullYear() + parseInt(years));
+    // openingDate.setMonth(openingDate.getMonth() + parseInt(months));
+    // openingDate.setDate(openingDate.getDate() + parseInt(days));
 
     if (images == null) {
         Alert.alert('Error!', 'You have not added any images');
@@ -60,9 +60,9 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
     try {
         const creationDate = new Date();
         const openingDate = new Date(creationDate);
-        openingDate.setFullYear(openingDate.getFullYear() + duration.years);
-        openingDate.setMonth(openingDate.getMonth() + duration.months);
-        openingDate.setDate(openingDate.getDate() + duration.days);
+        openingDate.setFullYear(openingDate.getFullYear() + parseInt(years, 10));
+        openingDate.setMonth(openingDate.getMonth() + parseInt(months, 10));
+        openingDate.setDate(openingDate.getDate() + parseInt(days, 10));
 
         let photos = [];
 

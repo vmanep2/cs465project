@@ -67,7 +67,7 @@ const style = StyleSheet.create({
     width: 60, // Fixed width
     borderRadius: 30, // Half of width/height to make it circular
     position: "absolute",
-    bottom: '15%', // Adjust as needed
+    bottom: '11%', // Adjust as needed
     right: '5%', // Adjust as needed
     backgroundColor: "#e91d63",
   },

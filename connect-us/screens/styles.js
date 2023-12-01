@@ -321,11 +321,12 @@ const styles = StyleSheet.create({
       fontFamily: "balsamiq-sans-bold"
     },
     pickerSection: {
-      position: "fixed",
+      
       flexDirection: 'row',
       justifyContent: 'space-evenly',
       alignItems: 'center',
-      padding: 11,
+      padding: 15,
+      marginTop: -30
     },
     pickerGroup: {
       flex: 1,
