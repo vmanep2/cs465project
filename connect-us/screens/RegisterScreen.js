@@ -22,6 +22,8 @@ import {
 } from "obscenity";
 import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "../firebaseConfig";
 
 const RegisterScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
@@ -31,7 +33,7 @@ const RegisterScreen = ({ navigation, route }) => {
   const [partnerUserName, setPartnerUserName] = useState("");
   const [userUID, setUserUID] = useState();
 
-  const { firstName } = route.params;
+  const { firstName, profilePicture } = route.params;
 
   const insets = useSafeArea();
 
