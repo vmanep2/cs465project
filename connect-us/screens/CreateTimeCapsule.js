@@ -43,6 +43,11 @@ const CreateTimeCapsule = ({ user, onTimeCapsuleCreated }) => {
       return;
     }
 
+    if (images == null) {
+        Alert.alert('Error!', 'You have not added any images');
+        return;
+    }
+
     try {
         const creationDate = new Date();
         const openingDate = new Date(creationDate);

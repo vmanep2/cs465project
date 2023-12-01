@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import { Alert, TouchableOpacity, View, StyleSheet, Text, Dimensions } from "react-native";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +16,8 @@ export default function ViewMemory({ route, navigation }) {
     const [date, setDate] = useState("");
     const [userData, setUserData] = useState(null);
 
+    const { width } = Dimensions.get('window');
+    
     const handleAddButtonPress = () => {
         navigation.navigate("AddLogScreen");
     }
@@ -122,7 +124,16 @@ export default function ViewMemory({ route, navigation }) {
                         <Ionicons name="calendar-outline" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
-                
+                <View
+                    style={{
+                        height: 2,
+                        position: 'absolute',
+                        top: 70,
+                        width: width - 30,
+                        backgroundColor: '#e0e0e0', // You can customize the color as per your requirement
+                        alignSelf: 'center',
+                    }}
+                />
                 <View style={styles.empty_container}>
                     <Text style={styles.paragraph}>No memories today, create one!</Text>
                 </View>
@@ -142,7 +153,16 @@ export default function ViewMemory({ route, navigation }) {
                     <Ionicons name="trash" size={30} color="#D73E02" />
                 </TouchableOpacity>
             </View>
-            
+            <View
+                style={{
+                    height: 2,
+                    position: 'absolute',
+                    top: 70,
+                    width: width - 30,
+                    backgroundColor: '#e0e0e0', // You can customize the color as per your requirement
+                    alignSelf: 'center',
+                }}
+            />
             <View style={styles.container}>
                 <Text style={styles.heading2}>{date}</Text>
                 <ImageCarousel data={uriList} />
@@ -164,9 +184,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         flexDirection: "row",
         alignItems: "center",
-        borderBottomWidth: 2,
-        borderBottomColor: '#e0e0e0',
-        // backgroundColor: '#324'
     },
     empty_container: {
         flex: 1,

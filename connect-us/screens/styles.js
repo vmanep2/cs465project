@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     },
     titleHeader: {
         fontSize: 28,
-        fontFamily: "balsamiq-sans-bold",
+        fontFamily: "balsamiq-sans",
         color: '#000',
         paddingVertical: 20,
         paddingHorizontal: 20,
@@ -188,13 +188,11 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
 
         width: '100%',
-        borderBottomWidth: 2,
-        borderBottomColor: '#e0e0e0',
         marginBottom: 20,
     },
     heading: {
         fontSize: 28,
-        fontFamily: "balsamiq-sans-bold",
+        fontFamily: "balsamiq-sans",
     },
     itemContainer: {
         flex: 1,
@@ -304,9 +302,6 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       padding: 20,
     },
-    divider: {
-        
-    }
   });
   
   export default styles;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, FlatList, Image, Button, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground, Alert} from 'react-native';
+import {View, Text, FlatList, Image, Button, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground, Alert, Dimensions } from 'react-native';
 import { collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../firebaseConfig';
@@ -11,6 +11,8 @@ const lockIcon = require('../assets/lock_icon.jpg');
 const ViewTimeCapsule = ({ user }) => {
   const [timeCapsules, setTimeCapsules] = useState({});
   const [openedCapsules, setOpenedCapsules] = useState({}); 
+  
+  const { width } = Dimensions.get('window');
 
   const fetchImages = async (uri) => {
     const imageURI = await getDownloadURL(ref(storage, uri))
@@ -107,9 +109,19 @@ const ViewTimeCapsule = ({ user }) => {
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingBottom: 50 }}>
       <ScrollView>
         <Text style={styles.titleHeader}>Time Capsule</Text>
+        <View
+            style={{
+                height: 2,
+                position: 'absolute',
+                top: 70,
+                width: width - 30,
+                backgroundColor: '#e0e0e0', // You can customize the color as per your requirement
+                alignSelf: 'center',
+            }}
+        />
         {Object.keys(timeCapsules).sort((a, b) => b - a).map(year => (
           <View key={year}>
             <Text style={styles.yearHeader}>{year}</Text>
