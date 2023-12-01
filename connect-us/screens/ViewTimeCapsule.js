@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, FlatList, Image, Button, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground} from 'react-native';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import {View, Text, FlatList, Image, Button, TouchableOpacity, SafeAreaView, ScrollView, ImageBackground, Alert} from 'react-native';
+import { collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { Ionicons } from 'react-native-vector-icons';
 import styles from './styles';
 
 const lockIcon = require('../assets/lock_icon.jpg');
 
 const ViewTimeCapsule = ({ user }) => {
   const [timeCapsules, setTimeCapsules] = useState({});
-  const [openedCapsules, setOpenedCapsules] = useState({}); // Tracks which capsules are opened
+  const [openedCapsules, setOpenedCapsules] = useState({}); 
 
   useEffect(() => {
     if (!user) {
@@ -52,8 +53,38 @@ const ViewTimeCapsule = ({ user }) => {
   const handleToggleCapsule = (id) => {
     setOpenedCapsules(prevState => ({
       ...prevState,
-      [id]: !prevState[id], // Toggle the open/close state
+      [id]: !prevState[id], 
     }));
+  };
+
+  const deleteTimeCapsule = async (capsuleId) => {
+    try {
+      await deleteDoc(doc(db, 'timeCapsules', capsuleId));
+      Alert.alert('Success', 'Time Capsule deleted successfully!');
+
+      setTimeCapsules(prevCapsules => {
+        const updatedCapsules = { ...prevCapsules };
+        Object.keys(updatedCapsules).forEach(year => {
+          updatedCapsules[year] = updatedCapsules[year].filter(capsule => capsule.id !== capsuleId);
+        });
+        return updatedCapsules;
+      });
+    } catch (error) {
+      console.error('Error deleting time capsule:', error);
+      Alert.alert('Error', 'Failed to delete Time Capsule!');
+    }
+  };
+
+  const confirmDelete = (capsuleId) => {
+    Alert.alert(
+      'Delete Time Capsule',
+      'Are you sure you want to delete this time capsule?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'OK', onPress: () => deleteTimeCapsule(capsuleId) },
+      ],
+      { cancelable: false }
+    );
   };
 
 
@@ -102,6 +133,9 @@ const ViewTimeCapsule = ({ user }) => {
                   )}
 
                   <Text style={styles.itemText}>Opening Date: {openingDate.toLocaleDateString()}</Text>
+                  <TouchableOpacity onPress={() => confirmDelete(capsule.id)} style={styles.trashIcon}>
+                    <Ionicons name="trash" size={30} color="#D73E02" />
+                  </TouchableOpacity>
                 </View>
               );
             })}

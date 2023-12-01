@@ -239,7 +239,12 @@ const styles = StyleSheet.create({
       fontWeight: "bold", 
       fontFamily: "balsamiq-sans"
     },
-  
+    trashIcon: {
+      position: 'absolute',
+      right: 10,
+      top: 10,
+    },
+
     lockIconStyle: {
       width: 50, 
       height: 50,
