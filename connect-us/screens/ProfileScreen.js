@@ -54,15 +54,6 @@ const pickImage = async () => {
 
        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         {image ? (
-          <View style={styles.circularContainer}>
-            <Image source={{ uri: "https://nico-nico-nii.com/pre-defined/user_profile_pic_1" }} style={styles.circularImage} />
-          </View>
-        ) : (
-          <View style={styles.circularContainer}>
-            <Button color='#e91d63' style={styles.profileButton} title="Choose profile picture" onPress={pickImage} />
-          </View>
-        )}
-        {image ? (
           <FlatList
             horizontal
             data={image}
@@ -100,10 +91,10 @@ const pickImage = async () => {
       }}>
         How long have you and your partner been together?
       </Text>
-      <View style={styles.durationContainer}>
-          <TextInput style={styles.input} placeholder="Years" keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="Months" keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="Days" keyboardType="numeric" />
+      <View style={styles.profileDurationContainer}>
+          <TextInput style={{fontSize: 16}} placeholder="Years" keyboardType="numeric" />
+          <TextInput style={{fontSize: 16}} placeholder="Months" keyboardType="numeric" />
+          <TextInput style={{fontSize: 16}} placeholder="Days" keyboardType="numeric" />
       </View>
 
        <View style={{ width: "100%", alignItems: "center" }}>
